@@ -1,0 +1,165 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv='content-style-type' content='text/css' />
+<meta http-equiv='content-language' content='ru' />
+<title>Настройки</title>
+<link rel="stylesheet" href="../css/options.css" type="text/css" media="screen" />
+</head>
+<body>
+    <div id="message"></div>
+    <div id="main">
+        <h2 id="title">SW patch <span id="version"></span></h2>
+        <h3>Настройки</h3>
+        <table>
+            <tr><th colspan="2" class="sub">Чятик</th></tr>
+            <tr>
+                <td>
+                    <input type="checkbox" id="look_for_chyatik" class="beep">
+                    <br />
+                </td>
+                <td>
+                    <label for="look_for_chyatik"> Следить за Чятиком</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="checkbox" id="play_beep" class="beep">
+                    <br />
+                </td>
+                <td>
+                    <label for="play_beep"> Разрешить звуковое уведомление Чятика</label>
+                </td>
+            </tr>
+
+            <tr><td colspan="2" class="tab"></td></tr>
+            <tr><th colspan="2" class="sub">Портал</th></tr>
+            <tr>
+                <td>
+                    <input type="checkbox" id="change_layout" class="change">
+                    <br />
+                </td>
+                <td>
+                    <label for="change_layout"> Ограничить ширину портала</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="checkbox" id="alternative_menu" class="change">
+                    <br />
+                </td>
+                <td>
+                    <label for="alternative_menu"> Активировать альтернативное меню</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="checkbox" id="change_shadowbox" class="change">
+                    <br />
+                </td>
+                <td>
+                    <label for="change_shadowbox"> Сделать Shadowbox белым</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="checkbox" id="correct_url" class="change">
+                    <br />
+                </td>
+                <td>
+                    <label for="correct_url"> Исправлять некоторые некорректные ссылки<br />
+                    <i class="small">(ссылки редактирования сообщений в профилях, ссылки мобильного Чятика)</i></label>
+                </td>
+            </tr>
+
+            <tr><td colspan="2" class="tab"></td></tr>
+            <tr><th colspan="2" class="sub">Галерея</th></tr>
+            <tr>
+                <td>
+                    <input type="checkbox" id="gallery_avatars" class="change">
+                    <br />
+                </td>
+                <td>
+                    <label for="gallery_avatars"> Отображать аватарки пользователей в комментариях галереи<br />
+                    <i class="small">Работает только с загруженными на сервер пользовательскими аватарками.</i></label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="checkbox" id="gallery_ignor_smiles" class="change">
+                    <br />
+                </td>
+                <td>
+                    <label for="gallery_ignor_smiles"> Игнорировать графические смайлики</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="checkbox" id="gallery_fix_cat_1" class="change">
+                    <br />
+                </td>
+                <td>
+                    <label for="gallery_fix_cat_1"> Добавить картинки к главной ссылке _SonicCIS art_</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="checkbox" id="gallery_filmstrip_hide_line" class="change">
+                    <br />
+                </td>
+                <td>
+                    <label for="gallery_filmstrip_hide_line"> Скрыть черные полосы у фильмстриппера</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="checkbox" id="enable_photoswipe" class="change">
+                    <br />
+                </td>
+                <td>
+                    <label for="enable_photoswipe"> Использовать Photoswipe для просмотра изображений в галерее</label>
+                </td>
+            </tr>
+
+            <tr><td colspan="2" class="tab"></td></tr>
+            <tr><th colspan="2" class="sub">Форум</th></tr>
+            <tr>
+                <td>
+                    <input type="checkbox" id="forum_right_to_left" class="forum">
+                    <br />
+                </td>
+                <td class="label_relative">
+                    <label for="forum_right_to_left"> Переносить колонку со статусами в левую область
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="checkbox" id="forum_reputation_ignore" class="forum">
+                    <br />
+                </td>
+                <td class="label_relative">
+                    <label for="forum_reputation_ignore"> Скрыть репутацию в профилях и сообщениях
+                    </label>
+                </td>
+            </tr>
+
+            <tr><td colspan="2" class="tab"></td></tr>
+            <tr><th colspan="2" class="sub">Реклама</th></tr>
+            <tr>
+                <td>
+                    <input type="checkbox" id="disable_commercial" class="commercial">
+                    <br />
+                </td>
+                <td>
+                    <label for="disable_commercial"> Скрыть рекламу</label>
+                </td>
+            </tr>
+        </table>
+        <br />
+        <input type="button" class="save" value="Сохранить" /> <input type="button" class="close" value="Закрыть" /> <br />
+        <br />
+    </div>
+</body>
+</html>
+

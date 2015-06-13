@@ -1,0 +1,13 @@
+{
+  "name": "sw_patch_f",
+  "title": "SW patch",
+  "id": "sw-patch--sonic-world-ru",
+  "description": "Patch for sonic-world.ru",
+  "author": "Chip Viled",
+  "license": "MIT",
+  "version": "1.0.17.2",
+  "icon": "data/img/48x48.png",
+  "permissions": {
+    "cross-domain-content": ["http://sonic-world.ru", "https://sonic-world.ru"]
+  }
+}

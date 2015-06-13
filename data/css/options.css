@@ -1,0 +1,61 @@
+body {
+    position: relative;
+    font-size: 1.0em;
+    font-family: arial,helvetica,sans-serif;
+    background-color: #FFFFFF;
+}
+
+#main {
+    text-align: center;
+    /*padding-top: 30px;*/
+    position: relative;
+    font-size: 1.0em;
+    line-height: 0.8;
+}
+
+table {
+    margin: auto;
+}
+
+#message {
+    text-align: center;
+    position: fixed;
+    width: 100%;
+    background-color: #009900;
+    color: #FFFFFF;
+    display: inline;
+    padding: 16px 0;
+    display: none;
+    z-index: 101;
+    top: 0;
+    left: 0;
+    font-size: 1.2em;
+}
+
+.disabled {
+    color: #CCCCCC;
+}
+
+.small {
+    font-size: 0.7em;
+}
+
+.sub {
+    background-color: #EEEEFF;
+}
+
+.tab {
+    height: 1.2em;
+}
+
+#title {
+    color: #6666AA;
+}
+
+.grey {
+    color: #999999;
+}
+
+.label_relaive{
+    position: relative;
+}
