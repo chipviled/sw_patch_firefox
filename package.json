@@ -5,7 +5,7 @@
   "description": "Patch for sonic-world.ru",
   "author": "Chip Viled",
   "license": "MIT",
-  "version": "1.0.17.2",
+  "version": "1.0.17.3",
   "icon": "data/img/48x48.png",
   "permissions": {
     "cross-domain-content": ["http://sonic-world.ru", "https://sonic-world.ru"]

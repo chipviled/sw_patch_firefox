@@ -69,7 +69,7 @@ function saveOptions() {
 
 // Get version from manifest.
 var version = (function () {
-    return " 1.0.17.2 <br />(firefox unstable)";
+    return " 1.0.17.3 <br />(firefox unstable)";
 }() );
 
 

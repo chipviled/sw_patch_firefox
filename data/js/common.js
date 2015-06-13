@@ -2,6 +2,10 @@
  *
  */
 
+// jQuery no conflict.
+jQuery.noConflict();
+
+
 // Get param from url.
 function getUrlParameter(sUrl, sParam) {
     if (sUrl == undefined) return 0;
@@ -111,7 +115,7 @@ function swPatchRun(sw_config) {
         #sb-loading-inner span{background:url(data:image/gif;base64,'+loading_gif+') no-repeat;}\
         #sb-loading-inner{position:absolute;font-size:14px;line-height:34px;height:34px;top:50%;margin-top:-17px;width:100%;text-align:center;}\
         </style>');
-        console.log(/\/forum\//.test(document.location.pathname), '"'+document.location.pathname+'"');
+        //console.log(/\/forum\//.test(document.location.pathname), '"'+document.location.pathname+'"');
     }
 
 
