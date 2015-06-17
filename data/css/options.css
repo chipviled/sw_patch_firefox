@@ -59,3 +59,12 @@ table {
 .label_relaive{
     position: relative;
 }
+
+.commercial_warning{
+    display: none;
+    font-size: 0.7em;
+    font-style: italic;
+    line-height: 1;
+    color: #a94442;
+    vertical-align: baseline;
+}

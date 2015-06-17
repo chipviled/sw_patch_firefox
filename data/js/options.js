@@ -1,5 +1,7 @@
 //
+var version = "1.0.17.4 <br />(firefox unstable)";
 var sw_config = {};
+var commercial_warning = "Включая эту опцию вы поступаете вообще-то не очень хорошо.";
 
 
 function notification(msg) {
@@ -66,25 +68,32 @@ function saveOptions() {
     notification('Данные сохранены');
 }
 
+// Show commercial warning
+function commercialWarning(disable_commercial) {
+    if (disable_commercial == true) jQuery("#disable_commercial_warning").text(commercial_warning).show();
 
-// Get version from manifest.
-var version = (function () {
-    return " 1.0.17.3 <br />(firefox unstable)";
-}() );
+    jQuery("#disable_commercial").change(function() {
+        if (jQuery(this).prop('checked')) {
+            jQuery("#disable_commercial_warning").text(commercial_warning).stop().fadeIn();
+        } else {
+            jQuery("#disable_commercial_warning").stop().fadeOut();
+        }
+    });
+}
 
 
 // Get config
 self.port.on("take_get_sw_config", function(conf) {
     sw_config = conf;
     loadOptions();
+    commercialWarning(conf["disable_commercial"]);
 });
 
 
 document.addEventListener('DOMContentLoaded', function () {
-    jQuery("#version").html('v' + version);
+    jQuery("#version").html('v ' + version);
     jQuery(".save").click(saveOptions);
     jQuery(".close").click(closeOptions);
 
     self.port.emit("get_sw_config", null);
 });
-
