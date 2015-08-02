@@ -1,5 +1,5 @@
 //
-var version = "1.0.17.4 <br />(firefox unstable)";
+var version = "1.0.18 <br />(firefox unstable)";
 var sw_config = {};
 var commercial_warning = "Включая эту опцию вы поступаете вообще-то не очень хорошо.";
 
@@ -45,6 +45,7 @@ function loadOptions() {
     loadCheckbox("forum_right_to_left");
     loadCheckbox("enable_photoswipe");
     loadCheckbox("forum_reputation_ignore");
+    loadCheckbox("forum_avards_ignore");
 }
 
 function saveOptions() {
@@ -62,6 +63,7 @@ function saveOptions() {
     saveCheckbox("forum_right_to_left");
     saveCheckbox("enable_photoswipe");
     saveCheckbox("forum_reputation_ignore");
+    saveCheckbox("forum_avards_ignore");
 
     self.port.emit("set_sw_config", sw_config);
 
