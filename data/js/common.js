@@ -336,25 +336,32 @@ function swPatchRun(sw_config) {
         if ($p.attr('rel') != undefined) {
 
             var wh = $p.attr('rel').split(';');
-            var w = parseInt(wh[2].split('=')[1], 0);
-            var h = parseInt(wh[1].split('=')[1], 0);
+            var w = parseInt(wh[2].split('=')[1], 10);
+            var h = parseInt(wh[1].split('=')[1], 10);
             var hr = $p.attr('href');
             var img_src = $p.find('img').attr('src');
 
-            var cv_pswp = document.createElement('div');
-            cv_pswp.innerHTML =
-                  '<div class="cv_photoswipe_gallery">'
-                + '<figure class="cv_figure_pswp">'
-                + '<a href="' + hr + '" data-size="' + w + 'x' + h + '">'
-                + '<img class="image shadowbox_add" src=' + img_src + ' />'
-                + '</a>'
-                + '</figure>'
-                + '</div>';
+            // *** https://developer.mozilla.org/en-US/Add-ons/Overlay_Extensions/XUL_School/DOM_Building_and_HTML_Insertion
+            // var cv_pswp = document.createElement('div');
+            // cv_pswp.innerHTML =
+            //       '<div class="cv_photoswipe_gallery">'
+            //     + '<figure class="cv_figure_pswp">'
+            //     + '<a href="' + hr + '" data-size="' + w + 'x' + h + '">'
+            //     + '<img class="image shadowbox_add" src=' + img_src + ' />'
+            //     + '</a>'
+            //     + '</figure>'
+            //     + '</div>';
+
+            var $cv_pswp = jQuery('<div></div>', {class: 'cv_photoswipe_gallery'})
+                .append('<figure class="cv_figure_pswp"></figure>');
+            $cv_pswp.find('figure').append('<a></a>');
+            $cv_pswp.find('a').attr({href: hr, 'data-size': w + 'x' + h}).append('<img></img>');
+            $cv_pswp.find('img').attr({class: 'image shadowbox_add', src: img_src});
 
             $p.addClass('invisible');
             $p.find('img').addClass('invisible').removeClass('image');
 
-            $p.after(cv_pswp);
+            $p.after($cv_pswp);
 
             // Forestall run photoswipe.
             init_begin_pswp();
@@ -390,4 +397,3 @@ function swPatchBegin(conf) {
 jQuery(document).ready( function() {
     self.port.emit("get_sw_config", null);
 });
-
