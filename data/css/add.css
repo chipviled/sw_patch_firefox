@@ -225,3 +225,17 @@
 .cv_mainmenu ul li.topmenu ul li.cv_mainmenu_select:hover {
     background: linear-gradient(to bottom, #FFFFFF 0%,#FFFFFF 100%);
 }
+
+
+
+.invisible {
+  height: 0;
+  width: auto;
+  display: block;
+}
+
+.cv_figure_pswp {
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+}

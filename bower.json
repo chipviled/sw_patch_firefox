@@ -1,0 +1,23 @@
+{
+  "name": "sw_patch_f",
+  "description": "Patch for sonic-world.ru",
+  "main": "lib/main.js",
+  "authors": [
+    "Chip Viled"
+  ],
+  "license": "MIT",
+  "moduleType": [],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "photoswipe": "photo.swipe#~4.1.0"
+  }
+}

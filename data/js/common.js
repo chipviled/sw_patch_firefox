@@ -336,8 +336,8 @@ function swPatchRun(sw_config) {
         if ($p.attr('rel') != undefined) {
 
             var wh = $p.attr('rel').split(';');
-            var w = wh[2].split('=')[1];
-            var h = wh[1].split('=')[1];
+            var w = parseInt(wh[2].split('=')[1], 0);
+            var h = parseInt(wh[1].split('=')[1], 0);
             var hr = $p.attr('href');
             var img_src = $p.find('img').attr('src');
 

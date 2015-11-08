@@ -1,1 +1,7 @@
 sw_patch_f.xpi
+composer.phar
+vendor/*
+bower_components/*
+
+
+
