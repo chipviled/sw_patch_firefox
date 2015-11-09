@@ -1,5 +1,5 @@
 //
-var version = "1.0.19 <br />(firefox unstable)";
+var version = "1.0.20 <br />(firefox unstable)";
 var sw_config = {};
 var commercial_warning = "Включая эту опцию вы поступаете вообще-то не очень хорошо.";
 
