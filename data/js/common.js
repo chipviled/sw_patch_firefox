@@ -125,7 +125,7 @@ function swPatchRun(sw_config) {
         jQuery("#swz1, #swz2").hide();
         jQuery("#sw_f div").first().hide();
         jQuery("#board_statistics").next().hide();
-        jQuery("table.c410d1").hide();                  // New testing commercial banner.
+        jQuery(".c410d1").hide();                       // New testing commercial banner.
         jQuery("#swz1").parent("th").hide();            // Banner after first line in forum.
     }
 
