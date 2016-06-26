@@ -76,8 +76,33 @@ function getGalleryAvatarPict(uid) {
                 .css('background-image', 'url(../files/public/avatars/av'+ uid +'.jpg)');
             }
     });
-
 }
+
+
+// Get status page.
+function getStatusPage(rol, callback) {
+    var st = '';
+    
+    if (rol !== null && rol !== 0) {
+        st = '?st=' + (rol * 15);
+    }
+    
+    jQuery.ajax({
+        url:'http://sonic-world.ru/forum/statuses/all/' + st,
+        type:'GET',
+//        error:
+//            function(){
+//                consola.log('ERROR');
+//            },
+        success:
+            function(data, textStatus, jqXHR){
+                callback(data);
+            }
+        });
+    return 0;
+}
+
+// 
 
 
 //*****************************************************************************
@@ -367,6 +392,69 @@ function swPatchRun(sw_config) {
             init_begin_pswp();
 
         }
+    }
+
+
+    // Add user avatars in gallery.
+    if ( true && (/\/forum\/$/.test(document.location.pathname)) ) {
+        var status_original = jQuery('#statusHook');
+        var status_filter = jQuery('<div></div>').addClass('ipsSideBlock').attr('id', 'statusHook-SWP');
+        var status_header = jQuery('<h3><a href="#" class="ipsSidebar_trigger ipsType_smaller right desc mod_links">×</a>Конкурсные статусы</h3>');
+        var status_body = jQuery('\
+        <div class="_sbcollapsable">\
+            <div id="status_wrapper-SWP">\
+                <div id="status_wrapper_inside-SWP">\
+                    <ul class="ipsList_withminiphoto status_list" >\
+                    </ul>\
+                </div>\
+            </div>\
+        </div>\
+        ');
+        var status_ul = status_body.find('ul')
+        var status_roll = 0;
+        status_filter.append(status_header);
+
+        getStatusPage(0, function (data) {
+            var stats_lists = jQuery(data).find('#status_wrapper > .ipsBox_container');
+            var li = null;
+            var liw = null;
+            var stats_rel = 0;
+            var message = '';
+
+            stats_lists.each(function (){
+                li = jQuery(jQuery(this).html());
+                message = li.find('.status_status').html();
+                
+                if (stats_rel < 5 && /topic.\d+.*?(конкурс|голос|дуэл)/.test(message)) {
+                    
+                    li.find('ul.ipsList_withtinyphoto').remove();
+                    li.find('.status_feedback').remove();
+                    
+                    li.find('.ipsUserPhoto_medium')
+                        .removeClass('ipsUserPhoto_medium')
+                        .addClass('ipsUserPhoto_mini');
+
+                    liw = jQuery('<li class="clearfix"></li>');
+                    liw.wrapInner(li);
+                    
+                    liw.find('.ipsBox_withphoto')
+                        .removeClass('status_content')
+                        .removeClass('ipsBox_withphoto')
+                        .addClass('list_content');
+                    
+                    status_ul.append(liw);
+                    stats_rel++;
+                }
+            });
+            status_filter.append(status_body);
+            
+            if (liw === null) {
+                status_filter.append(jQuery('<span>Пусто</span>'));
+            }
+            return o;
+        });
+        
+        status_original.before(status_filter);
     }
 
 }

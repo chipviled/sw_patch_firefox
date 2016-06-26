@@ -1,6 +1,5 @@
 sw_patch_f.xpi
 composer.phar
 bower_components/*
-
-
-
+.project
+.settings
