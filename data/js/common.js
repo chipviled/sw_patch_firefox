@@ -80,13 +80,20 @@ function getGalleryAvatarPict(uid) {
 
 
 // Get status page.
-function getStatusPage(rol, callback) {
+function getStatusPages(ul, rol, limit, recursion) {
+
+    var limit_recursion = 3;
+
+    if (recursion === null || recursion === undefined) {
+        recursion = 1;
+    }
+    var bard = null;
     var st = '';
-    
+
     if (rol !== null && rol !== 0) {
         st = '?st=' + (rol * 15);
     }
-    
+
     jQuery.ajax({
         url:'http://sonic-world.ru/forum/statuses/all/' + st,
         type:'GET',
@@ -96,13 +103,55 @@ function getStatusPage(rol, callback) {
 //            },
         success:
             function(data, textStatus, jqXHR){
-                callback(data);
+                bard = limit - setFiltredStatus(ul, data, limit);
+                recursion++;
+                if (bard > 0 && recursion <= limit_recursion){
+                    getStatusPages(ul, rol+1, bard, recursion)
+                } else if (bard === limit) {
+                    ul.append(jQuery('<li><span>Пусто</span></li>'));
+                }
             }
         });
     return 0;
 }
 
-// 
+
+// Filtring and insert statuses.
+function setFiltredStatus(ul, data, limit) {
+    var stats_lists = jQuery(data).find('#status_wrapper > .ipsBox_container');
+    var li = null;
+    var liw = null;
+    var stats_rel = 0;
+    var message = '';
+
+    stats_lists.each(function (){
+        li = jQuery(jQuery(this).html());
+        message = li.find('.status_status').html();
+
+        if (stats_rel < limit && /topic.\d+.*?(конкурс|голос|дуэл)/.test(message)) {
+
+            li.find('ul.ipsList_withtinyphoto').remove();
+            li.find('.status_feedback').remove();
+
+            li.find('.ipsUserPhoto_medium')
+                .removeClass('ipsUserPhoto_medium')
+                .addClass('ipsUserPhoto_mini');
+
+            liw = jQuery('<li class="clearfix"></li>');
+            liw.wrapInner(li);
+
+            liw.find('.ipsBox_withphoto')
+                .removeClass('status_content')
+                .removeClass('ipsBox_withphoto')
+                .addClass('list_content');
+
+            ul.append(liw);
+            stats_rel++;
+        }
+    });
+
+    return stats_rel;
+}
 
 
 //*****************************************************************************
@@ -366,17 +415,6 @@ function swPatchRun(sw_config) {
             var hr = $p.attr('href');
             var img_src = $p.find('img').attr('src');
 
-            // *** https://developer.mozilla.org/en-US/Add-ons/Overlay_Extensions/XUL_School/DOM_Building_and_HTML_Insertion
-            // var cv_pswp = document.createElement('div');
-            // cv_pswp.innerHTML =
-            //       '<div class="cv_photoswipe_gallery">'
-            //     + '<figure class="cv_figure_pswp">'
-            //     + '<a href="' + hr + '" data-size="' + w + 'x' + h + '">'
-            //     + '<img class="image shadowbox_add" src=' + img_src + ' />'
-            //     + '</a>'
-            //     + '</figure>'
-            //     + '</div>';
-
             var $cv_pswp = jQuery('<div></div>', {class: 'cv_photoswipe_gallery'})
                 .append('<figure class="cv_figure_pswp"></figure>');
             $cv_pswp.find('figure').append('<a></a>');
@@ -411,52 +449,13 @@ function swPatchRun(sw_config) {
         </div>\
         ');
         var status_ul = status_body.find('ul')
-        var status_roll = 0;
+
         status_filter.append(status_header);
+        status_filter.append(status_body);
+        status_original.after(status_filter);
 
-        getStatusPage(0, function (data) {
-            var stats_lists = jQuery(data).find('#status_wrapper > .ipsBox_container');
-            var li = null;
-            var liw = null;
-            var stats_rel = 0;
-            var message = '';
-
-            stats_lists.each(function (){
-                li = jQuery(jQuery(this).html());
-                message = li.find('.status_status').html();
-                
-                if (stats_rel < 5 && /topic.\d+.*?(конкурс|голос|дуэл)/.test(message)) {
-                    
-                    li.find('ul.ipsList_withtinyphoto').remove();
-                    li.find('.status_feedback').remove();
-                    
-                    li.find('.ipsUserPhoto_medium')
-                        .removeClass('ipsUserPhoto_medium')
-                        .addClass('ipsUserPhoto_mini');
-
-                    liw = jQuery('<li class="clearfix"></li>');
-                    liw.wrapInner(li);
-                    
-                    liw.find('.ipsBox_withphoto')
-                        .removeClass('status_content')
-                        .removeClass('ipsBox_withphoto')
-                        .addClass('list_content');
-                    
-                    status_ul.append(liw);
-                    stats_rel++;
-                }
-            });
-            status_filter.append(status_body);
-            
-            if (liw === null) {
-                status_filter.append(jQuery('<span>Пусто</span>'));
-            }
-            return 0;
-        });
-        
-        status_original.before(status_filter);
+        getStatusPages(status_ul, 0, 5);
     }
-
 }
 
 
