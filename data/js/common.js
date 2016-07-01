@@ -395,8 +395,8 @@ function swPatchRun(sw_config) {
     }
 
 
-    // Add user avatars in gallery.
-    if ( true && (/\/forum\/$/.test(document.location.pathname)) ) {
+    // Add forum filter status.
+    if ( sw_config.forum_filter_status && (/\/forum\/$/.test(document.location.pathname)) ) {
         var status_original = jQuery('#statusHook');
         var status_filter = jQuery('<div></div>').addClass('ipsSideBlock').attr('id', 'statusHook-SWP');
         var status_header = jQuery('<h3><a href="#" class="ipsSidebar_trigger ipsType_smaller right desc mod_links">×</a>Конкурсные статусы</h3>');
@@ -451,7 +451,7 @@ function swPatchRun(sw_config) {
             if (liw === null) {
                 status_filter.append(jQuery('<span>Пусто</span>'));
             }
-            return o;
+            return 0;
         });
         
         status_original.before(status_filter);

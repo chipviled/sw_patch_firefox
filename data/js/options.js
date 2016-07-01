@@ -46,6 +46,7 @@ function loadOptions() {
     loadCheckbox("enable_photoswipe");
     loadCheckbox("forum_reputation_ignore");
     loadCheckbox("forum_avards_ignore");
+    loadCheckbox("forum_filter_status");
 }
 
 function saveOptions() {
@@ -64,6 +65,7 @@ function saveOptions() {
     saveCheckbox("enable_photoswipe");
     saveCheckbox("forum_reputation_ignore");
     saveCheckbox("forum_avards_ignore");
+    saveCheckbox("forum_filter_status");
 
     self.port.emit("set_sw_config", sw_config);
 
