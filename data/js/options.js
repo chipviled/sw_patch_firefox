@@ -25,7 +25,7 @@ function loadText(id) {
 }
 
 function saveText(id) {
-	window.sw_config[id] = document.getElementById(id).value;
+    window.sw_config[id] = document.getElementById(id).value;
 }
 
 
