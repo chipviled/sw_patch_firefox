@@ -1,5 +1,5 @@
 //
-var version = "1.0.23";
+var version = "1.0.24";
 var sw_config = {};
 var commercial_warning = "Включая эту опцию вы поступаете вообще-то не очень хорошо.";
 
@@ -47,7 +47,7 @@ function loadOptions() {
     loadCheckbox("forum_reputation_ignore");
     loadCheckbox("forum_avards_ignore");
     loadCheckbox("forum_filter_status");
-    
+
     loadCheckbox("custom_style");
     loadText("custom_style_text");
 }
@@ -69,7 +69,7 @@ function saveOptions() {
     saveCheckbox("forum_reputation_ignore");
     saveCheckbox("forum_avards_ignore");
     saveCheckbox("forum_filter_status");
-    
+
     saveCheckbox("custom_style");
     saveText("custom_style_text");
 
