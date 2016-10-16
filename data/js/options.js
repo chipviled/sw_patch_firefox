@@ -1,5 +1,5 @@
 //
-var version = "1.0.22";
+var version = "1.0.23";
 var sw_config = {};
 var commercial_warning = "Включая эту опцию вы поступаете вообще-то не очень хорошо.";
 
@@ -13,20 +13,20 @@ function closeOptions() {
 }
 
 function loadCheckbox(id) {
-    document.getElementById(id).checked = typeof window.sw_config[id] == null ? false : window.sw_config[id] == true;
+    document.getElementById(id).checked = typeof window.sw_config[id] === null ? false : window.sw_config[id] == true;
 }
 
 function saveCheckbox(id) {
     window.sw_config[id] = document.getElementById(id).checked;
 }
 
-// function loadText(id) {
-//     document.getElementById(id).value = localStorage[id];
-// }
-//
-// function saveText(id) {
-//     localStorage[id] = document.getElementById(id).value;
-// }
+function loadText(id) {
+    document.getElementById(id).value = typeof localStorage[id] === 'undefined' ? window.sw_config[id] : localStorage[id];
+}
+
+function saveText(id) {
+	window.sw_config[id] = document.getElementById(id).value;
+}
 
 
 
@@ -47,6 +47,9 @@ function loadOptions() {
     loadCheckbox("forum_reputation_ignore");
     loadCheckbox("forum_avards_ignore");
     loadCheckbox("forum_filter_status");
+    
+    loadCheckbox("custom_style");
+    loadText("custom_style_text");
 }
 
 function saveOptions() {
@@ -66,6 +69,9 @@ function saveOptions() {
     saveCheckbox("forum_reputation_ignore");
     saveCheckbox("forum_avards_ignore");
     saveCheckbox("forum_filter_status");
+    
+    saveCheckbox("custom_style");
+    saveText("custom_style_text");
 
     self.port.emit("set_sw_config", sw_config);
 

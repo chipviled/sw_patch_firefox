@@ -456,6 +456,22 @@ function swPatchRun(sw_config) {
 
         getStatusPages(status_ul, 0, 5);
     }
+    
+    
+    // Add user custome style (css).
+    if ( sw_config.custom_style ) {
+        var style = document.createElement('style');
+        var css = sw_config.custom_style_text;
+        var body = document.body || document.getElementsByTagName('body')[0];
+        
+        style.type = 'text/css';
+        if (style.styleSheet){
+          style.styleSheet.cssText = css;
+        } else {
+          style.appendChild(document.createTextNode(css));
+        }
+        body.appendChild(style);   
+    }
 }
 
 
