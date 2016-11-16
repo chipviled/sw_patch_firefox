@@ -154,6 +154,22 @@ function setFiltredStatus(ul, data, limit) {
 }
 
 
+function clearReputation() {
+//    jQuery(".reputation, .rep_bar").hide();
+//    jQuery('[data-tabid="reputation"]').hide();
+    var style = document.createElement('style');
+    var css = '.reputation, .rep_bar, [data-tabid="reputation"] {display: none !important;}';
+    var body = document.body || document.getElementsByTagName('body')[0];
+    style.type = 'text/css';
+    if (style.styleSheet){
+        style.styleSheet.cssText = css;
+    } else {
+        style.appendChild(document.createTextNode(css));
+    }
+    body.appendChild(style);
+}
+
+
 //*****************************************************************************
 
 // Main patch run
@@ -206,8 +222,7 @@ function swPatchRun(sw_config) {
 
     // Hide forum reputation.
     if ( sw_config.forum_reputation_ignore && (/\/\/sonic-world\.ru\/forum/.test(document.location.href))  ) {
-        jQuery(".reputation, .rep_bar").hide();
-        jQuery('[data-tabid="reputation"]').hide();
+        clearReputation();
     }
 
 
