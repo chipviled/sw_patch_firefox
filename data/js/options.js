@@ -1,5 +1,5 @@
 //
-var version = "1.0.24";
+var version = "1.0.25";
 var sw_config = {};
 var commercial_warning = "Включая эту опцию вы поступаете вообще-то не очень хорошо.";
 
