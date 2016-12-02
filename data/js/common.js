@@ -170,6 +170,32 @@ function clearReputation() {
 }
 
 
+function addMultiquote(element) {
+    var post = jQuery(element);
+    var el = post.find('ul.post_controls');
+    var infoLink = post.find('span.post_id a').attr('href');
+    if (infoLink.length === 0) {
+        return;
+    }
+
+    var res = infoLink.match( /\/forum\/topic\/(\d*)-.*#entry(\d*)$/i );
+    if (res === null) {
+        return;
+    }
+
+    var t = res[1];
+    var qpid = res[2];
+    var href = 'https://sonic-world.ru/forum/index.php?app=forums&module=post&section=post&do=reply_post&f=16&t=' + t + '&qpid=' + qpid;
+    var link = jQuery('<a href="#" title="Эта кнопка позволяет выбрать несколько сообщений (можно из разных тем), а затем ответить одновременно на все." class="ipsButton_secondary">Цитата+</a>');
+    var li = jQuery('<li class="multiquote" id="multiq_" style=""></li>');
+
+    link.attr('href', href);
+    li.append(link);
+    li.attr('id', 'multiq_' + res[2]);
+    el.prepend(li);
+}
+
+
 //*****************************************************************************
 
 // Main patch run
@@ -486,6 +512,24 @@ function swPatchRun(sw_config) {
             style.appendChild(document.createTextNode(css));
         }
         body.appendChild(style);
+    }
+
+
+    // Add multiquote to closed themes.
+    if ( true
+            && (/\/forum\/topic\/\d*-/.test(document.location.pathname))
+            && !document.getElementById('sign_in')
+    ) {
+        var closedButton = jQuery('.topic_buttons .important span');
+
+        if (closedButton.length > 0) {
+            jQuery('.post_block').each( function(index, element) {
+                addMultiquote(element);
+            })
+        }
+
+
+
     }
 }
 
