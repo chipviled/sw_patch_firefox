@@ -47,6 +47,7 @@ function loadOptions() {
     loadCheckbox("forum_reputation_ignore");
     loadCheckbox("forum_avards_ignore");
     loadCheckbox("forum_filter_status");
+    loadCheckbox("forum_multiquote_in_closed_themes");
 
     loadCheckbox("custom_style");
     loadText("custom_style_text");
@@ -69,6 +70,7 @@ function saveOptions() {
     saveCheckbox("forum_reputation_ignore");
     saveCheckbox("forum_avards_ignore");
     saveCheckbox("forum_filter_status");
+    saveCheckbox("forum_multiquote_in_closed_themes");
 
     saveCheckbox("custom_style");
     saveText("custom_style_text");

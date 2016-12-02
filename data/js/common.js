@@ -515,8 +515,8 @@ function swPatchRun(sw_config) {
     }
 
 
-    // Add multiquote to closed themes.
-    if ( true
+    // Add multiquote in closed themes.
+    if ( sw_config.forum_multiquote_in_closed_themes
             && (/\/forum\/topic\/\d*-/.test(document.location.pathname))
             && !document.getElementById('sign_in')
     ) {
