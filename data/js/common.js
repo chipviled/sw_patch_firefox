@@ -191,7 +191,7 @@ function addMultiquote(element) {
 
     link.attr('href', href);
     li.append(link);
-    li.attr('id', 'multiq_' + res[2]);
+    li.attr('id', 'multiq_' + qpid);
     el.prepend(li);
 }
 
