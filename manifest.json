@@ -17,31 +17,43 @@
   "applications": {
     "gecko": {
       "id": "sw-patch--sonic-world-ru@jetpack",
-      "strict_min_version": "45.0"
+      "strict_min_version": "52.0"
     }
   },
 
   "content_scripts": [
     {
-      "matches": ["*://*.sonic-world.ru/*"],
-      "js": ["data/js/main.js"]
+      "matches": ["https://*.sonic-world.ru/*", "http://*.sonic-world.ru/*"],
+      "css": ["/data/css/add.css", "/data/css/photoswipe.css"],
+      "js": ["/vendor/jquery/jquery.min.js", "/data/js/contentscript.js"]
     }
   ],
   
+  "background": {
+    "scripts": [
+      "/data/vendor/jquery.min.js",
+      "/data/js/background.js"
+    ]
+  },
+  
   "permissions": [
-    "activeTab",
+    "https://*.sonic-world.ru/*",
+    "http://*.sonic-world.ru/*",
     "notifications",
     "storage"
   ],
   
   "browser_action": {
-    "default_icon": "data/img/32x32.png",
+    "default_icon": "/data/img/32x32.png",
     "default_title": "SW patch",
-    "default_popup": "data/html/popup.html"
+    "default_popup": "/data/html/popup.html"
   },
   
   "web_accessible_resources": [
-    "data/css/add.css"
+    "/data/css/add.css",
+
+    "/data/css/add.css",
+    "/data/css/photoswipe.css"
   ]
   
 }
