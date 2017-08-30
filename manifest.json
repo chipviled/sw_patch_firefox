@@ -1,0 +1,47 @@
+{
+
+  "manifest_version": 2,
+  "name": "SW patch",
+  "version": "1.1.0",
+ 
+  "description": "Patch for sonic-world.ru",
+  "homepage_url": "https://bitbucket.org/chipviled/sw_patch_f",
+  
+  "author": "Chip Viled",
+  "license": "MIT",
+  
+  "icons": {
+    "48": "data/img/48x48.png"
+  },
+
+  "applications": {
+    "gecko": {
+      "id": "sw-patch--sonic-world-ru@jetpack",
+      "strict_min_version": "45.0"
+    }
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["*://*.sonic-world.ru/*"],
+      "js": ["data/js/main.js"]
+    }
+  ],
+  
+  "permissions": [
+    "activeTab",
+    "notifications",
+    "storage"
+  ],
+  
+  "browser_action": {
+    "default_icon": "data/img/32x32.png",
+    "default_title": "SW patch",
+    "default_popup": "data/html/popup.html"
+  },
+  
+  "web_accessible_resources": [
+    "data/css/add.css"
+  ]
+  
+}
