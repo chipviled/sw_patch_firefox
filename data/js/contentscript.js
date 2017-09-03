@@ -12,7 +12,9 @@ loadJavaScript('/vendor/jquery/jquery.min.js', function() {
     });
 });
 
-loadJavaScript('js/photoswipe-init.js');
+loadJavaScript('/vendor/phoposwipe/photoswipe.min.js',
+    loadJavaScript('/data/js/photoswipe-init.js')
+);
 
 function loadJavaScript(js, callback) {
     var sv = document.createElement('script');

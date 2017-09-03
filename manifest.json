@@ -31,7 +31,7 @@
   
   "background": {
     "scripts": [
-      "/data/vendor/jquery.min.js",
+      "/vendor/jquery/jquery.min.js",
       "/data/js/background.js"
     ]
   },
@@ -50,9 +50,13 @@
   },
   
   "web_accessible_resources": [
-
+    "/data/js/common.js",
+    "/data/js/photoswipe-init.js",
+    "/vendor/photoswipe/photoswipe.min.js",
     "/data/css/add.css",
     "/data/css/photoswipe.css"
-  ]
+  ],
+  
+  "options_page": "/data/html/options.html"
   
 }

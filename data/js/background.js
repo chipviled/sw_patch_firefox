@@ -99,7 +99,7 @@ function lolresponse(response, status) {
 
 function getSw(){
     if (sw_config.look_for_chyatik) {
-        console.log('>>>', sw_config);
+        //console.log('>>>', sw_config);
 
         var url = 'http://sonic-world.ru/modules/chatik/chatik.php?chan=main';
         var params = "ajax=1&lastid=" + sw_lolresponse.lastid;
