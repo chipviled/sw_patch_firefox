@@ -534,28 +534,20 @@ function swPatchRun(sw_config) {
 }
 
 
-//-----------------------------------
-self.port.on("take_get_sw_config", function(conf) {
-    swPatchBegin(conf);
-});
 
-
-//-----------------------------------
-
-
-function swPatchBegin(conf) {
+function swPatchBegin(sw_config) {
     // Run only if it's not admin directory
     var path_r = document.location.pathname;
     if ( !(/\/odminka\//.test(path_r)) &&
          !(/\/e107_admin\//.test(path_r)) &&
          !(/\/admin\//.test(path_r))
     ){
-        swPatchRun(conf);
+        swPatchRun(sw_config);
     } else {
         console.log('SW_patch disabled for admin directory.');
     }
 }
 
 jQuery(document).ready( function() {
-    self.port.emit("get_sw_config", null);
+    swPatchBegin(window.sw_config);
 });

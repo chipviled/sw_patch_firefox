@@ -1,6 +1,6 @@
 
 
-window.sw_config = {
+sw_config = {
     look_for_chyatik: false,
     play_beep: false,
     disable_commercial: false,
@@ -27,17 +27,17 @@ setConfig();
 
 function getConfig() {
     var tmp;
-    for (var key in window.sw_config) {
-        tmp = window.sw_config[key]
-        window.sw_config[key] = typeof localStorage[key] == "undefined" ? window.sw_config[key] : localStorage[key];
-        if (window.sw_config[key] == 'true') window.sw_config[key] = true;
-        if (window.sw_config[key] == 'false') window.sw_config[key] = false;
+    for (var key in sw_config) {
+        tmp = sw_config[key]
+        sw_config[key] = typeof localStorage[key] == "undefined" ? sw_config[key] : localStorage[key];
+        if (sw_config[key] == 'true') sw_config[key] = true;
+        if (sw_config[key] == 'false') sw_config[key] = false;
     }
 }
 
 function setConfig() {
-    for (var key in window.sw_config) {
-        localStorage[key] = window.sw_config[key];
+    for (var key in sw_config) {
+        localStorage[key] = sw_config[key];
     }
 }
 
@@ -47,85 +47,88 @@ function beep() {
 }
 
 
+var sw_lolresponse = {
+    lastid: 0,
+    min_dlayamount: 3000,
+    max_dlayamount: 30000,
+    delta_dlayamount: 1.3,
+    dlayamount: 3000,
+    not_first: false,
+    number_beeps: 0
+}
+var httpRequest = new XMLHttpRequest();
 
-class Chyatick {
 
-    constructor() {
-        this.sw_lolresponse = {
-            lastid: 0,
-            min_dlayamount: 3000,
-            max_dlayamount: 30000,
-            delta_dlayamount: 1.3,
-            dlayamount: 3000,
-            not_first: false,
-            number_beeps: 0
-        }
-        this.httpRequest = new XMLHttpRequest();
-        this.url = 'http://sonic-world.ru/modules/chatik/chatik.php?chan=main';
-        this.getSw();
-    }
+function lolresponse(response, status) {
 
-    lolresponse(response, status) {
-        var m = response.match(/wohoo(\d+) (\d+)/);
-        if (m !== null) {
-            var new_start = m[1] || 0;
-            var new_end = m[2] || 0;
-            if (this.sw_lolresponse.lastid < new_end) {
-                this.sw_lolresponse.lastid = new_end;
-                this.sw_lolresponse.dlayamount = this.sw_lolresponse.min_dlayamount;
-                if (this.sw_lolresponse.not_first) this.sw_lolresponse.number_beeps += 1;
-                if((window.sw_config.play_beep) && (window.sw_lolresponse.not_first)) {
-                    beep();
-                }
-                if (!this.sw_lolresponse.not_first) this.sw_lolresponse.not_first = true;
+    var m = response.match(/wohoo(\d+) (\d+)/);
+
+    if (m !== null) {
+
+        var new_start = m[1];
+        var new_end = m[2];
+
+        if (sw_lolresponse.lastid < new_end) {
+            sw_lolresponse.lastid = new_end;
+
+            sw_lolresponse.dlayamount = sw_lolresponse.min_dlayamount;
+
+            if (sw_lolresponse.not_first) sw_lolresponse.number_beeps += 1;
+
+            if((sw_config.play_beep) && (sw_lolresponse.not_first)) {
+                beep();
             }
-        }
 
-        var nb = '';
-        if (this.sw_lolresponse.number_beeps > 0) {
-            nb = this.sw_lolresponse.number_beeps.toString();
-        }
-        //button.badge = nb;
-        console.log('>>> ', nb);
-
-        if (this.sw_lolresponse.dlayamount < this.sw_lolresponse.max_dlayamount) {
-            this.sw_lolresponse.dlayamount = this.sw_lolresponse.dlayamount * this.sw_lolresponse.delta_dlayamount;
-        } else {
-            this.sw_lolresponse.dlayamount = this.sw_lolresponse.max_dlayamount;
-        }
-
-        setTimeout(this.getSw, this.sw_lolresponse.dlayamount + 500);
-    }
-
-
-    getSw() {
-        if (window.sw_config.look_for_chyatik) {
-            var params = "ajax=1&lastid=" + this.sw_lolresponse.lastid;
-            this.httpRequest.onreadystatechange = this.answerSw;
-            this.httpRequest.open('POST', this.url, true);
-            this.httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            this.httpRequest.setRequestHeader("Connection", "close");
-            this.httpRequest.setRequestHeader("Content-length", params.length);
-            this.httpRequest.send(params);
-        } else {
-            // Not work, just sleep.
-            setTimeout(this.getSw, this.sw_lolresponse.max_dlayamount);
+            if (!sw_lolresponse.not_first) sw_lolresponse.not_first = true;
         }
     }
 
+    var nb = '';
+    if (sw_lolresponse.number_beeps > 0) nb = sw_lolresponse.number_beeps.toString();
+    browser.browserAction.setBadgeText ( { text: nb } );
 
-    answerSw() {
-        if (this.httpRequest.readyState === 4) {
-            if (this.httpRequest.status === 200) {
-                // All OK.
-                this.lolresponse(httpRequest.responseText);
-            } else {
-                // Some error (like 404).
-                setTimeout(this.getSw, this.sw_lolresponse.max_dlayamount);
-            }
+    if (sw_lolresponse.dlayamount < sw_lolresponse.max_dlayamount) {
+        sw_lolresponse.dlayamount = sw_lolresponse.dlayamount * sw_lolresponse.delta_dlayamount;
+    } else {
+        sw_lolresponse.dlayamount = sw_lolresponse.max_dlayamount;
+    }
+
+    setTimeout(getSw, sw_lolresponse.dlayamount + 500);
+}
+
+
+function getSw(){
+    if (sw_config.look_for_chyatik) {
+        console.log('>>>', sw_config);
+
+        var url = 'http://sonic-world.ru/modules/chatik/chatik.php?chan=main';
+        var params = "ajax=1&lastid=" + sw_lolresponse.lastid;
+
+        httpRequest.onreadystatechange = answerSw;
+        httpRequest.open('POST', url, true);
+        httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        httpRequest.setRequestHeader("Connection", "close");
+        httpRequest.setRequestHeader("Content-length", params.length);
+
+        httpRequest.send(params);
+    } else {
+        // Not work.
+        setTimeout(getSw, sw_lolresponse.max_dlayamount);
+    }
+}
+
+
+function answerSw() {
+    if (httpRequest.readyState === 4) {
+        if (httpRequest.status === 200) {
+            // All OK.
+            lolresponse(httpRequest.responseText);
+        } else {
+            // Some error (like 404).
+            setTimeout(getSw, sw_lolresponse.max_dlayamount);
         }
     }
 }
 
-window.sw_chyatick_watcher = new Chyatick();
+getSw();
 
