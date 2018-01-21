@@ -1,3 +1,10 @@
+SW_DEBUG = true;
+
+// Debug logs.
+function debug(arg) {
+    if (SW_DEBUG) console.log('>>>', ...arguments);
+}
+
 // Analog jQuery.ready.
 // Default DOMContentLoaded not work as need.
 (function (window) {
@@ -76,228 +83,24 @@
 })(window);
 
 
-// jQuery no conflict.
-//jQuery.noConflict();
-
-
-
-//
-// // Get param from url.
-// function getUrlParameter(sUrl, sParam) {
-//     if (sUrl == undefined) return 0;
-//     var sPageURL = sUrl.split('?')[1];
-//     var sURLVariables = sPageURL.split('&');
-//     for (var i = 0; i < sURLVariables.length; i++)
-//     {
-//         var sParameterName = sURLVariables[i].split('=');
-//         if (sParameterName[0] == sParam)
-//         {
-//             return sParameterName[1];
-//         }
-//     }
-// }
-//
-// // Get param from url [special e107].
-// function getE107UrlParameter(sUrl, sParam) {
-//     if (sUrl == undefined) return 0;
-//     var sPageURL = sUrl.split('?')[1];
-//     var sURLVariables = sPageURL.split('.');
-//     for (var i = 0; i < sURLVariables.length; i++)
-//     {
-//         if (sURLVariables[i] == sParam)
-//         {
-//             return sURLVariables[i+1] || 0;
-//         }
-//     }
-// }
-//
-// // Add avatar for gallery user.
-// function getGalleryAvatarPict(uid) {
-//     if (uid == undefined) return false;
-//     jQuery.ajax({
-//         url:'http://sonic-world.ru/files/public/avatars/av'+ uid +'.jpg',
-//         type:'HEAD',
-//         error:
-//             function(){
-//                 jQuery.ajax({
-//                 url:'http://sonic-world.ru/files/public/avatars/av'+ uid +'.png',
-//                 type:'HEAD',
-//                 error:
-//                     function(){
-//                         jQuery.ajax({
-//                         url:'http://sonic-world.ru/files/public/avatars/av'+ uid +'.gif',
-//                         type:'HEAD',
-//                         error:
-//                             function(){
-//                                 jQuery('.sw_gallery_avatar_'+ uid)
-//                                     .css('background-color', '#E0E0E0');
-//                             },
-//                         success:
-//                             function(){
-//                                 jQuery('.sw_gallery_avatar_'+ uid)
-//                                     .css('background-image', 'url(../files/public/avatars/av'+ uid +'.gif)');
-//                             }
-//                         });
-//                     },
-//                 success:
-//                     function(){
-//                         jQuery('.sw_gallery_avatar_'+ uid)
-//                             .css('background-image', 'url(../files/public/avatars/av'+ uid +'.png)');
-//                     }
-//                 });
-//             },
-//         success:
-//             function(){
-//                 jQuery('.sw_gallery_avatar_'+ uid)
-//                 .css('background-image', 'url(../files/public/avatars/av'+ uid +'.jpg)');
-//             }
-//     });
-// }
-//
-//
-// // Get status page.
-// function getStatusPages(ul, rol, limit, recursion) {
-//
-//     var limit_recursion = 3;
-//
-//     if (recursion === null || recursion === undefined) {
-//         recursion = 1;
-//     }
-//     var bard = null;
-//     var st = '';
-//
-//     if (rol !== null && rol !== 0) {
-//         st = '?st=' + (rol * 15);
-//     }
-//
-//     jQuery.ajax({
-//         url:'http://sonic-world.ru/forum/statuses/all/' + st,
-//         type:'GET',
-// //        error:
-// //            function(){
-// //                consola.log('ERROR');
-// //            },
-//         success:
-//             function(data, textStatus, jqXHR){
-//                 bard = limit - setFiltredStatus(ul, data, limit);
-//                 recursion++;
-//                 if (bard > 0 && recursion <= limit_recursion){
-//                     getStatusPages(ul, rol+1, bard, recursion)
-//                 } else if (bard === limit) {
-//                     ul.append(jQuery('<li><span>Пусто</span></li>'));
-//                 }
-//             }
-//         });
-//     return 0;
-// }
-//
-//
-// // Filtring and insert statuses.
-// function setFiltredStatus(ul, data, limit) {
-//     var stats_lists = jQuery(data).find('#status_wrapper > .ipsBox_container');
-//     var li = null;
-//     var liw = null;
-//     var stats_rel = 0;
-//     var message = '';
-//
-//     stats_lists.each(function (){
-//         li = jQuery(jQuery(this).html());
-//         message = li.find('.status_status').html();
-//
-//         if (stats_rel < limit && /topic.\d+.*?(конкурс|голос|дуэл)/.test(message)) {
-//
-//             li.find('ul.ipsList_withtinyphoto').remove();
-//             li.find('.status_feedback').remove();
-//
-//             li.find('.ipsUserPhoto_medium')
-//                 .removeClass('ipsUserPhoto_medium')
-//                 .addClass('ipsUserPhoto_mini');
-//
-//             liw = jQuery('<li class="clearfix"></li>');
-//             liw.wrapInner(li);
-//
-//             liw.find('.ipsBox_withphoto')
-//                 .removeClass('status_content')
-//                 .removeClass('ipsBox_withphoto')
-//                 .addClass('list_content');
-//
-//             ul.append(liw);
-//             stats_rel++;
-//         }
-//     });
-//
-//     return stats_rel;
-// }
-//
-//
-// function clearReputation() {
-// //    jQuery(".reputation, .rep_bar").hide();
-// //    jQuery('[data-tabid="reputation"]').hide();
-//     var style = document.createElement('style');
-//     var css = '.reputation, .rep_bar, [data-tabid="reputation"] {display: none !important;}';
-//     var body = document.body || document.getElementsByTagName('body')[0];
-//     style.type = 'text/css';
-//     if (style.styleSheet){
-//         style.styleSheet.cssText = css;
-//     } else {
-//         style.appendChild(document.createTextNode(css));
-//     }
-//     body.appendChild(style);
-// }
-//
-//
-// function addMultiquote(element) {
-//     var post = jQuery(element);
-//     var el = post.find('ul.post_controls');
-//     var infoLink = post.find('span.post_id a').attr('href');
-//     if (infoLink.length === 0) {
-//         return;
-//     }
-//
-//     var res = infoLink.match( /\/forum\/topic\/(\d*)-.*#entry(\d*)$/i );
-//     if (res === null) {
-//         return;
-//     }
-//
-//     var t = res[1];
-//     var qpid = res[2];
-//     var href = 'https://sonic-world.ru/forum/index.php?app=forums&module=post&section=post&do=reply_post&f=16&t=' + t + '&qpid=' + qpid;
-//     var link = jQuery('<a href="#" title="Эта кнопка позволяет выбрать несколько сообщений (можно из разных тем), а затем ответить одновременно на все." class="ipsButton_secondary">Цитата+</a>');
-//     var li = jQuery('<li class="multiquote" id="multiq_" style=""></li>');
-//
-//     link.attr('href', href);
-//     li.append(link);
-//     li.attr('id', 'multiq_' + qpid);
-//     el.prepend(li);
-// }
 //
 //
 // //*****************************************************************************
 //
-// // Main patch run
-// function swPatchRun(sw_config) {
-//
-//     // Add fxied layout and background color.
-//     if (sw_config.change_layout  && (document.location.pathname != '') ) {
-//         jQuery("body").addClass("body").addClass("wrap");
-//
-//         var $wrap = jQuery("#wrap");
-//         $wrap.prepend("<div id='wrap_content'></div>");
-//
-//         var $wrap_content = jQuery("#wrap_content");
-//         $wrap_content.append( jQuery("#sw_c1") );
-//         $wrap_content.append( jQuery("#sw_c3") );
-//         $wrap_content.append( jQuery("#sw_c2") );
-//         $wrap_content.append( jQuery("#sw_f") );
-//         $wrap.prepend( jQuery("#toplogo") );
-//
-//         $wrap.addClass("wrap");
-//
-//         jQuery("#sw_c1").addClass("sw_top");
-//         jQuery("#sw_c3").addClass("sw_top");
-//     }
-//
-//
+// Main patch run
+function swPatchRun(sw_config) {
+    let patch = new PatchRoll(sw_config);
+
+    // Add fxied layout and background color.
+    if (sw_config.change_layout
+        && (document.location.pathname != '')
+        && !(/\/\/sonic-world\.ru\/forum/.test(document.location.href))
+    ) {
+        debug('changeLayout');
+        patch.changeLayout();
+    }
+
+
 //     // Correct some problam on Shadowbox.
 //     if ( sw_config.change_shadowbox && (document.location.pathname != '') ) {
 //         jQuery("a[rel*='shadowbox'] img").addClass("shadowbox_add");
@@ -604,21 +407,22 @@
 //
 //
 //     }
-// }
+}
 
-console.log('>>> sw_config 1',window.sw_config);
+debug('sw_config 1', window.sw_config);
 
 jReady (() => {
     // Run only if it's not admin directory
-    console.log('>>> sw_config 2',window.sw_config);
+    debug('sw_config 2');
     var path_r = document.location.pathname;
     if ( !(/\/odminka\//.test(path_r)) &&
          !(/\/e107_admin\//.test(path_r)) &&
-         !(/\/admin\//.test(path_r))
+         !(/\/admin\//.test(path_r)) &&
+         !(/\/fckeditor\//.test(path_r))
     ){
-        console.log('>>> Run main patch. Disable.');
-        //swPatchRun(window.sw_config);
+        debug('Run main patch.');
+        swPatchRun(window.sw_config);
     } else {
-        console.log('SW_patch disabled for admin directory.');
+        debug('SW_patch disabled for admin directory.');
     }
 });

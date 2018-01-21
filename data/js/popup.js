@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
     backGround = browser.extension.getBackgroundPage();
     backGround.updateIconClear();
 
-    console.log('>>>');
+    //console.log('>>>');
 
     document.getElementById('popup_options').onclick = () => {
         openTab(browser.extension.getURL('/data/html/options.html'));

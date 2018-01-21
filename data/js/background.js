@@ -25,6 +25,7 @@ setConfig();
 
 function getConfig() {
     var tmp;
+    console.log('<<<', localStorage);
     for (var key in sw_config) {
         tmp = sw_config[key]
         sw_config[key] = typeof localStorage[key] == "undefined" ? sw_config[key] : localStorage[key];
@@ -136,15 +137,22 @@ getSw();
 //External functions
 
 function updateIconClear() {
- sw_lolresponse.number_beeps = 0;
- browser.browserAction.setBadgeText({
-     text: ''
- });
+    sw_lolresponse.number_beeps = 0;
+    browser.browserAction.setBadgeText({
+        text: ''
+    });
 }
 
 browser.runtime.onMessage.addListener(function(msg, sender, sendResponse){
- if (msg == 'getOptions'){
-     response = sw_config;
- }
- sendResponse(response);
+    if (msg.name == 'getOptions'){
+         response = sw_config;
+         sendResponse(response);
+         return;
+    }
+
+    if (msg.name == 'setOptions'){
+         sw_config = msg.data;
+         sendResponse(null);
+         return;
+    }
 });

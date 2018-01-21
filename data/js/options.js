@@ -8,9 +8,10 @@ function notification(msg) {
     jQuery('#message').html(msg).stop().fadeIn("slow").delay(3000).fadeOut("slow");
 }
 
-function closeOptions() {
-    self.port.emit("options_hide", null);
-}
+// function closeOptions() {
+//     //self.port.emit("options_hide", null);
+//     open(location, '_self').close();
+// }
 
 function loadCheckbox(id) {
     document.getElementById(id).checked = typeof window.sw_config[id] === null ? false : window.sw_config[id] == true;
@@ -75,9 +76,14 @@ function saveOptions() {
     saveCheckbox("custom_style");
     saveText("custom_style_text");
 
-    self.port.emit("set_sw_config", sw_config);
-
-    notification('Данные сохранены');
+    //self.port.emit("set_sw_config", sw_config);
+    let sending = browser.runtime.sendMessage({
+        name: 'setOptions',
+        data: sw_config
+    });
+    sending.then(function(response){
+        notification('Данные сохранены');
+    });
 }
 
 // Show commercial warning
@@ -95,17 +101,15 @@ function commercialWarning(disable_commercial) {
 
 
 // Get config
-self.port.on("take_get_sw_config", function(conf) {
-    sw_config = conf;
+browser.runtime.sendMessage({name: 'getOptions'}, function(response){
+    sw_config = response;
     loadOptions();
-    commercialWarning(conf["disable_commercial"]);
+    commercialWarning(sw_config["disable_commercial"]);
 });
 
 
 document.addEventListener('DOMContentLoaded', function () {
     jQuery("#version").html('v ' + version);
     jQuery(".save").click(saveOptions);
-    jQuery(".close").click(closeOptions);
-
-    self.port.emit("get_sw_config", null);
+    //jQuery(".close").click(closeOptions);
 });

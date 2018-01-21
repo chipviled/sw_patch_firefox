@@ -1,6 +1,4 @@
 
-// Do NOT use jQuery in this code.
-
 function loadJavaScript(js, callback) {
     let sv = document.createElement('script');
     sv.src = browser.extension.getURL(js);
@@ -13,12 +11,17 @@ function loadJavaScript(js, callback) {
     }
 }
 
-browser.runtime.sendMessage('getOptions', function(response){
+browser.runtime.sendMessage({name: 'getOptions'}, function(response){
     let s2 = document.createElement('script');
     let options = response ? response : {};
     s2.text = 'window.sw_config = ' + JSON.stringify(options) + ';';
     (document.head||document.documentElement).appendChild(s2);
-    loadJavaScript('/data/js/common.js');
+    loadJavaScript('/vendor/jquery/jquery.min.js',
+        loadJavaScript('/data/js/Patch.js',
+            loadJavaScript('/data/js/common.js')
+        )
+    );
+
 });
 
 
