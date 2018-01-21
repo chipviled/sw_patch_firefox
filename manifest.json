@@ -25,7 +25,6 @@
       "matches": ["https://*.sonic-world.ru/*", "http://*.sonic-world.ru/*"],
       "css": ["/data/css/add.css", "/vendor/photoswipe/photoswipe.css"],
       "js": [
-
         "/data/js/contentscript.js"
       ]
     }
