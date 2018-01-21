@@ -2,12 +2,14 @@ document.addEventListener("DOMContentLoaded", function () {
     backGround = browser.extension.getBackgroundPage();
     backGround.updateIconClear();
 
-    jQuery("#popup_options").click(function() { openTab(browser.extension.getURL('/data/html/options.html')); });
-    jQuery("#popup_close").click(function() { window.close(); });
+    console.log('>>>');
 
-    if (localStorage['look_for_chyatik'] === 'true') {
-        jQuery("#popup_chatik_link").text('чятик').click(function() { openTab('http://sonic-world.ru/modules/chatik/chatik.php') });
-    }
+//    jQuery("#popup_options").click(function() { openTab(browser.extension.getURL('/data/html/options.html')); });
+//    jQuery("#popup_close").click(function() { window.close(); });
+
+    // if (localStorage['look_for_chyatik'] === 'true') {
+    //     jQuery("#popup_chatik_link").text('чятик').click(function() { openTab('http://sonic-world.ru/modules/chatik/chatik.php') });
+    // }
 });
 
 function openTab(url) {

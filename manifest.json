@@ -3,13 +3,12 @@
   "manifest_version": 2,
   "name": "SW patch",
   "version": "1.1.0",
- 
+
   "description": "Patch for sonic-world.ru",
   "homepage_url": "https://bitbucket.org/chipviled/sw_patch_f",
-  
+
   "author": "Chip Viled",
-  "license": "MIT",
-  
+
   "icons": {
     "48": "data/img/48x48.png"
   },
@@ -25,38 +24,40 @@
     {
       "matches": ["https://*.sonic-world.ru/*", "http://*.sonic-world.ru/*"],
       "css": ["/data/css/add.css", "/vendor/photoswipe/photoswipe.css"],
-      "js": ["/vendor/jquery/jquery.min.js", "/data/js/contentscript.js"]
+      "js": [
+        
+        "/data/js/contentscript.js"
+      ]
     }
   ],
-  
+
   "background": {
     "scripts": [
       "/vendor/jquery/jquery.min.js",
       "/data/js/background.js"
     ]
   },
-  
+
   "permissions": [
     "https://*.sonic-world.ru/*",
     "http://*.sonic-world.ru/*",
     "notifications",
-    "storage"
+    "storage",
+    "tabs"
   ],
-  
+
   "browser_action": {
     "default_icon": "/data/img/32x32.png",
     "default_title": "SW patch",
     "default_popup": "/data/html/popup.html"
   },
-  
+
   "web_accessible_resources": [
     "/data/js/common.js",
     "/data/js/photoswipe-init.js",
     "/vendor/photoswipe/photoswipe.min.js",
     "/data/css/add.css",
     "/vendor/photoswipe/photoswipe.css"
-  ],
-  
-  "options_page": "/data/html/options.html"
-  
+  ]
+
 }
