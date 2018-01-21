@@ -1,7 +1,3 @@
-/*
- *
- */
-
 // jQuery no conflict.
 jQuery.noConflict();
 

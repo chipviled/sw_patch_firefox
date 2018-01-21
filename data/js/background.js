@@ -1,5 +1,3 @@
-
-
 sw_config = {
     look_for_chyatik: false,
     play_beep: false,
@@ -132,3 +130,21 @@ function answerSw() {
 
 getSw();
 
+
+
+//*****************************************************************************
+//External functions
+
+function updateIconClear() {
+ sw_lolresponse.number_beeps = 0;
+ browser.browserAction.setBadgeText({
+     text: ''
+ });
+}
+
+browser.runtime.onMessage.addListener(function(msg, sender, sendResponse){
+ if (msg == 'getOptions'){
+     response = sw_config;
+ }
+ sendResponse(response);
+});

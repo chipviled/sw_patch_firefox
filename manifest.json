@@ -24,7 +24,7 @@
   "content_scripts": [
     {
       "matches": ["https://*.sonic-world.ru/*", "http://*.sonic-world.ru/*"],
-      "css": ["/data/css/add.css", "/data/css/photoswipe.css"],
+      "css": ["/data/css/add.css", "/vendor/photoswipe/photoswipe.css"],
       "js": ["/vendor/jquery/jquery.min.js", "/data/js/contentscript.js"]
     }
   ],
@@ -54,7 +54,7 @@
     "/data/js/photoswipe-init.js",
     "/vendor/photoswipe/photoswipe.min.js",
     "/data/css/add.css",
-    "/data/css/photoswipe.css"
+    "/vendor/photoswipe/photoswipe.css"
   ],
   
   "options_page": "/data/html/options.html"
