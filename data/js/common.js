@@ -606,11 +606,11 @@
 //     }
 // }
 
-
+console.log('>>> sw_config 1',window.sw_config);
 
 jReady (() => {
     // Run only if it's not admin directory
-    console.log(window.sw_config);
+    console.log('>>> sw_config 2',window.sw_config);
     var path_r = document.location.pathname;
     if ( !(/\/odminka\//.test(path_r)) &&
          !(/\/e107_admin\//.test(path_r)) &&
