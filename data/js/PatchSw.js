@@ -1,4 +1,4 @@
-class PatchRoll {
+class PatchSw {
     constructor(config) {
         this.config = config || {};
         this.jQuery = window.jQuery;
@@ -92,6 +92,50 @@ class PatchRoll {
         wrap.addClass("wrap");
         this.jQuery("#sw_c1").addClass("sw_top");
         this.jQuery("#sw_c3").addClass("sw_top");
+    }
+
+    changeShadowbox() {
+        this.jQuery("a[rel*='shadowbox'] img").addClass("shadowbox_add");
+        this.jQuery('body').append('<style>#sb-body,#sb-loading{background-color: #FFFFFF !important;}</style>');
+        this.jQuery('body').append(`<style>
+        #sb-loading-inner{position:absolute;font-size:14px;line-height:34px;height:34px;top:50%;margin-top:-17px;width:100%;text-align:center;}
+        </style>'`);
+    }
+
+    disableCommercial() {
+        this.jQuery(".slza").hide();
+        this.jQuery("#swz1, #swz2").hide();
+        this.jQuery("#sw_f div").first().hide();
+        this.jQuery("#board_statistics").next().hide();
+        this.jQuery(".c410d1").hide();
+        //this.jQuery("#swz1").parent("th").hide();         // Not need after update forum to v. 3.
+    }
+
+    galleryFilmstripHideLine() {
+        this.jQuery('#filmstrip').children('table').children('tbody').children('tr:nth-child(2n-1)').hide();
+    }
+
+    forumReputationIgnore() {
+        var style = document.createElement('style');
+        var css = `
+            .reputation,
+            .ipsRepBadge,
+            .ipsReact_reaction,
+            .ipsReact_reactions,
+            .ipsReactOverview,
+            .ipsReact,
+            .cProfileRepScore {
+                display: none !important;
+            }
+        `;
+        var body = document.body || document.getElementsByTagName('body')[0];
+        style.type = 'text/css';
+        if (style.styleSheet){
+            style.styleSheet.cssText = css;
+        } else {
+            style.appendChild(document.createTextNode(css));
+        }
+        body.appendChild(style);
     }
 
 

@@ -1,8 +1,6 @@
-SW_DEBUG = true;
-
 // Debug logs.
-function debug(arg) {
-    if (SW_DEBUG) console.log('>>>', ...arguments);
+function debug(args) {
+    console.log('>>>', ...arguments);
 }
 
 // Analog jQuery.ready.
@@ -83,15 +81,28 @@ function debug(arg) {
 })(window);
 
 
-//
-//
-// //*****************************************************************************
-//
+//*****************************************************************************
+
+// Main patch run
+function swPatchMini(sw_config) {
+    let patch = new PatchSw(sw_config) || debug('Patch not load !!!');
+
+    // Hide forum reputation.
+    // Forym only.
+    if ( sw_config.forum_reputation_ignore
+        && (/\/\/sonic-world\.ru\/forum/.test(document.location.href))
+    ) {
+        debug('forumReputationIgnore');
+        patch.forumReputationIgnore();
+    }
+}
+
 // Main patch run
 function swPatchRun(sw_config) {
-    let patch = new PatchRoll(sw_config);
+    let patch = new PatchSw(sw_config) || debug('Patch not load !!!');
 
     // Add fxied layout and background color.
+    // Portal only.
     if (sw_config.change_layout
         && (document.location.pathname != '')
         && !(/\/\/sonic-world\.ru\/forum/.test(document.location.href))
@@ -100,45 +111,41 @@ function swPatchRun(sw_config) {
         patch.changeLayout();
     }
 
+    // Correct some problam on Shadowbox.
+    // Portal only.
+    if ( sw_config.change_shadowbox
+        && (document.location.pathname != '')
+        && !(/\/\/sonic-world\.ru\/forum/.test(document.location.href))
+    ) {
+        debug('changeShadowbox');
+        patch.changeShadowbox();
+    }
 
-//     // Correct some problam on Shadowbox.
-//     if ( sw_config.change_shadowbox && (document.location.pathname != '') ) {
-//         jQuery("a[rel*='shadowbox'] img").addClass("shadowbox_add");
-//         jQuery('body').append('<style>#sb-body,#sb-loading{background-color: #FFFFFF !important;}</style>');
-//         jQuery('body').append('<style>\
-//         #sb-loading-inner{position:absolute;font-size:14px;line-height:34px;height:34px;top:50%;margin-top:-17px;width:100%;text-align:center;}\
-//         </style>');
-//     }
+    // Hide _some_ commercial banners.
+    // Portal and forum.
+    if (sw_config.disable_commercial
+    ) {
+        debug('disableCommercial');
+        patch.disableCommercial();
+    }
+
 //
-//
-//     // Hide _some_ commercial banners.
-//     if (sw_config.disable_commercial) {
-//         jQuery(".slza").hide();
-//         jQuery("#swz1, #swz2").hide();
-//         jQuery("#sw_f div").first().hide();
-//         jQuery("#board_statistics").next().hide();
-//         jQuery(".c410d1").hide();                       // New testing commercial banner.
-//         jQuery("#swz1").parent("th").hide();            // Banner after first line in forum.
-//     }
-//
-//
-//     // Hide forum reputation.
-//     if ( sw_config.forum_reputation_ignore && (/\/\/sonic-world\.ru\/forum/.test(document.location.href))  ) {
-//         clearReputation();
-//     }
-//
-//
+//     // DEPRECATED
 //     // Hide forum avards.
 //     if ( sw_config.forum_avards_ignore && (/\/\/sonic-world\.ru\/forum/.test(document.location.href))  ) {
 //         jQuery(".author_info").find('fieldset').hide();
 //         jQuery('[data-tabid="awards"]').hide();
 //     }
 //
-//
-//     // Hide filmstripper black lines.
-//     if ( sw_config.gallery_filmstrip_hide_line && (/\/gallery\/displayimage.php/.test(document.location.pathname)) ) {
-//         jQuery('#filmstrip').children('table').children('tbody').children('tr:nth-child(2n-1)').hide();
-//     }
+
+    // Hide filmstripper black lines.
+    // Gallery displayimage only.
+    if ( sw_config.gallery_filmstrip_hide_line
+        && (/\/gallery\/displayimage.php/.test(document.location.pathname))
+    ) {
+        debug('galleryFilmstripHideLine');
+        patch.galleryFilmstripHideLine();
+    }
 //
 //
 //     // Add some images to main link gallery.
@@ -410,6 +417,15 @@ function swPatchRun(sw_config) {
 }
 
 debug('sw_config 1', window.sw_config);
+var path_r = document.location.pathname;
+if ( !(/\/odminka\//.test(path_r)) &&
+     !(/\/e107_admin\//.test(path_r)) &&
+     !(/\/admin\//.test(path_r)) &&
+     !(/\/fckeditor\//.test(path_r))
+){
+    debug('Run mini patch.');
+    swPatchMini(window.sw_config);
+}
 
 jReady (() => {
     // Run only if it's not admin directory
