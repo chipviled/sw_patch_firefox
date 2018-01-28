@@ -12,6 +12,10 @@ browser.runtime.sendMessage({name: 'getOptions'}, function(response){
     ps.src = browser.extension.getURL('/vendor/photoswipe/photoswipe.min.js');
     document.body.appendChild(ps);
 
+    const psu = document.createElement('script');
+    psu.src = browser.extension.getURL('/vendor/photoswipe/photoswipe-ui-default.min.js');
+    document.body.appendChild(psu);
+
     const psi = document.createElement('script');
     psi.src = browser.extension.getURL('/data/js/photoswipe-init.js');
     document.body.appendChild(psi);

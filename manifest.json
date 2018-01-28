@@ -55,8 +55,13 @@
     "/data/js/common.js",
     "/data/js/photoswipe-init.js",
     "/vendor/photoswipe/photoswipe.min.js",
+    "/vendor/photoswipe/photoswipe-ui-default.min.js",
     "/data/css/add.css",
-    "/vendor/photoswipe/photoswipe.css"
+    "/vendor/photoswipe/photoswipe.css",
+    "/vendor/photoswipe/default-skin/default-skin.css",
+    "/vendor/photoswipe/default-skin/default-skin.png",
+    "/vendor/photoswipe/default-skin/default-skin.svg",
+    "/vendor/photoswipe/default-skin/preloader.gif"
   ]
 
 }

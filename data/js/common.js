@@ -295,11 +295,11 @@ class PatchSw {
         let list;
         // Correct url for edit comments in user profile.
         if ( /\/user\.php\?/.test(document.location.href) ) {
-            let sw_user_id = getE107UrlParameter(document.location.href, 'id');
+            let sw_user_id = this.getE107UrlParameter(document.location.href, 'id');
             let sw_edit_id = 0;
             list = this.jQuery('a[href*="/comment.php?.edit."]');
             for(let i = 0; i < list.length; i++) {
-                sw_edit_id = getE107UrlParameter(jQuery(list[i]).attr('href'), 'edit');
+                sw_edit_id = this.getE107UrlParameter(this.jQuery(list[i]).attr('href'), 'edit');
                 this.jQuery(list[i]).attr('href','/comment.php?comment.user.'+sw_user_id+'.edit.'+sw_edit_id);
             }
         }
@@ -384,13 +384,57 @@ class PatchSw {
     }
 
 
+    enablePhotoswipe() {
+        let p = this.jQuery('a[rel*="shadowbox"]');
+        if (p.attr('rel') !== undefined) {
+
+            var wh = p.attr('rel').split(';');
+            var w = parseInt(wh[2].split('=')[1], 10);
+            var h = parseInt(wh[1].split('=')[1], 10);
+            var hr = p.attr('href');
+            var img_src = p.find('img').attr('src');
+
+            var cv_pswp = this.jQuery('<div></div>', {class: 'cv_photoswipe_gallery'})
+                .append('<figure class="cv_figure_pswp"></figure>');
+            cv_pswp.find('figure').append('<a></a>');
+            cv_pswp.find('a').attr({href: hr, 'data-size': w + 'x' + h}).append('<img></img>');
+            cv_pswp.find('img').attr({class: 'image shadowbox_add', src: img_src});
+
+            p.addClass('invisible');
+            p.find('img').addClass('invisible').removeClass('image');
+            p.after(cv_pswp);
+
+            // Forestall run photoswipe.
+            init_begin_pswp();              // Global function.
+        }
+    }
+
+
+    customStyle() {
+        let style = document.createElement('style');
+        let css = sw_config.custom_style_text;
+        let body = document.body || document.getElementsByTagName('body')[0];
+        style.type = 'text/css';
+        if (style.styleSheet){
+            style.styleSheet.cssText = css;
+        } else {
+            style.appendChild(document.createTextNode(css));
+        }
+        body.appendChild(style);
+    }
+
+
+    forumRightToLeft() {
+        let column = this.jQuery('#ipsLayout_sidebar').detach().insertBefore('#ipsLayout_mainArea');
+        column.css({"padding-left": "0", "padding-right": "20px"});
+    }
 
 
 }
 
 
 //  ====================    DEPRECATED   ========================
-
+//
 // // Get status page.
 // function getStatusPages(ul, rol, limit, recursion) {
 //
@@ -624,48 +668,35 @@ function swPatchRun(sw_config) {
         patch.alternativeMenu();
     }
 
-//
-//     // Forum. Moving right colum to left.
-//     if ( (sw_config.forum_right_to_left) &&
-//             ( (/\/\/sonic-world\.ru\/forum/.test(document.location.href)                // New path to forum.
-//                 || (/\/\/forum.sonic-world\.ru/.test(document.location.href))) )        // Old path to forum.
-//     ) {
-//         jQuery('#board_index').removeClass('ipsLayout_withright').addClass('ipsLayout_withleft');
-//         jQuery('#board_index').removeClass('ipsLayout_largeright').addClass('ipsLayout_largeleft');
-//         jQuery('#index_stats').removeClass('ipsLayout_right').addClass('ipsLayout_left');
-//         jQuery('#board_index').prepend( jQuery('#index_stats') );
-//     }
-//
-//
-//     // Add Photoswipe to gallery
-//     if ( (sw_config.enable_photoswipe) && (/\/gallery\/displayimage.php/.test(document.location.pathname)) ) {
-//
-//         var $p = jQuery('a[rel*="shadowbox"]');
-//         if ($p.attr('rel') != undefined) {
-//
-//             var wh = $p.attr('rel').split(';');
-//             var w = parseInt(wh[2].split('=')[1], 10);
-//             var h = parseInt(wh[1].split('=')[1], 10);
-//             var hr = $p.attr('href');
-//             var img_src = $p.find('img').attr('src');
-//
-//             var $cv_pswp = jQuery('<div></div>', {class: 'cv_photoswipe_gallery'})
-//                 .append('<figure class="cv_figure_pswp"></figure>');
-//             $cv_pswp.find('figure').append('<a></a>');
-//             $cv_pswp.find('a').attr({href: hr, 'data-size': w + 'x' + h}).append('<img></img>');
-//             $cv_pswp.find('img').attr({class: 'image shadowbox_add', src: img_src});
-//
-//             $p.addClass('invisible');
-//             $p.find('img').addClass('invisible').removeClass('image');
-//
-//             $p.after($cv_pswp);
-//
-//             // Forestall run photoswipe.
-//             init_begin_pswp();
-//
-//         }
-//     }
-//
+    // Add Photoswipe to gallery.
+    // Gallery displayimage only.
+    if ( (sw_config.enable_photoswipe)
+        && (/\/gallery\/displayimage.php/.test(document.location.pathname))
+    ) {
+        debug('enablePhotoswipe');
+        patch.enablePhotoswipe();
+
+    }
+
+
+    // Add user custome style (css).
+    // All sity and forum.
+    if ( sw_config.custom_style ) {
+        debug('customStyle');
+        patch.customStyle();
+    }
+
+
+    // Forum. Moving right colum to left.
+    // Forum (main only)
+    if ( (sw_config.forum_right_to_left)
+        && /\/\/sonic-world\.ru\/forum/.test(document.location.href)
+    ) {
+        debug('forumRightToLeft');
+        patch.forumRightToLeft();
+    }
+
+//  ====================    DEPRECATED   ========================
 //
 //     // Add forum filter status.
 //     if ( sw_config.forum_filter_status && (/\/forum\/$/.test(document.location.pathname)) ) {
@@ -692,22 +723,6 @@ function swPatchRun(sw_config) {
 //     }
 //
 //
-//     // Add user custome style (css).
-//     if ( sw_config.custom_style ) {
-//         var style = document.createElement('style');
-//         var css = sw_config.custom_style_text;
-//         var body = document.body || document.getElementsByTagName('body')[0];
-//
-//         style.type = 'text/css';
-//         if (style.styleSheet){
-//             style.styleSheet.cssText = css;
-//         } else {
-//             style.appendChild(document.createTextNode(css));
-//         }
-//         body.appendChild(style);
-//     }
-//
-//
 //     // Add multiquote in closed themes.
 //     if ( sw_config.forum_multiquote_in_closed_themes
 //             && (/\/forum\/topic\/\d*-/.test(document.location.pathname))
@@ -720,10 +735,8 @@ function swPatchRun(sw_config) {
 //                 addMultiquote(element);
 //             })
 //         }
-//
-//
-//
 //     }
+
 }
 
 jReady (() => {
