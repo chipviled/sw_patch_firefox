@@ -17,6 +17,7 @@ sw_config = {
     forum_filter_status: false,
     forum_multiquote_in_closed_themes: false,
     custom_style: false,
+    forum_avatar_square: false,
     custom_style_text: '/* Demo */ \na { color: #FF0000 !important; }'
 };
 

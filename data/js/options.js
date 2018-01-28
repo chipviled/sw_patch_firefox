@@ -22,11 +22,12 @@ function saveCheckbox(id) {
 }
 
 function loadText(id) {
-    document.getElementById(id).value = typeof localStorage[id] === 'undefined' ? window.sw_config[id] : localStorage[id];
+    document.getElementById(id).value = (localStorage[id] === undefined) ? window.sw_config[id] : localStorage[id];
 }
 
 function saveText(id) {
     window.sw_config[id] = document.getElementById(id).value;
+    localStorage[id] = window.sw_config[id];
 }
 
 
@@ -49,6 +50,7 @@ function loadOptions() {
     loadCheckbox("forum_avards_ignore");
     loadCheckbox("forum_filter_status");
     loadCheckbox("forum_multiquote_in_closed_themes");
+    loadCheckbox("forum_avatar_square");
 
     loadCheckbox("custom_style");
     loadText("custom_style_text");
@@ -72,6 +74,7 @@ function saveOptions() {
     saveCheckbox("forum_avards_ignore");
     saveCheckbox("forum_filter_status");
     saveCheckbox("forum_multiquote_in_closed_themes");
+    saveCheckbox("forum_avatar_square");
 
     saveCheckbox("custom_style");
     saveText("custom_style_text");

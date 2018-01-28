@@ -226,6 +226,46 @@ class PatchSw {
         body.appendChild(style);
     }
 
+    forumAvatarSquare() {
+        let style = document.createElement('style');
+        let css = `
+            .ipsUserPhoto_large img,
+            img.ipsUserPhoto_large,
+            .ipsUserPhoto_large::after,
+
+            .ipsUserPhoto_tiny img,
+            img.ipsUserPhoto_tiny,
+            .ipsUserPhoto_tiny::after,
+
+            .ipsUserPhoto_xlarge img,
+            img.ipsUserPhoto_xlarge,
+            .ipsUserPhoto_xlarge::after,
+
+            .ipsUserPhoto_mini img,
+            img.ipsUserPhoto_mini,
+            .ipsUserPhoto_mini::after,
+
+            .ipsUserPhoto_medium img,
+            img.ipsUserPhoto_medium,
+            .ipsUserPhoto_medium::after,
+
+            .ipsUserPhoto_small img,
+            img.ipsUserPhoto_small,
+            .ipsUserPhoto_small::after
+            {
+                border-radius: 0 !important;
+            }
+        `;
+        let body = document.body || document.getElementsByTagName('body')[0];
+        style.type = 'text/css';
+        if (style.styleSheet){
+            style.styleSheet.cssText = css;
+        } else {
+            style.appendChild(document.createTextNode(css));
+        }
+        body.appendChild(style);
+    }
+
     galleryFixCat1() {
         let tmp = `
         <div class="image" style="display:inline-block;">
@@ -615,7 +655,6 @@ function swPatchRun(sw_config) {
         patch.galleryFilmstripHideLine();
     }
 
-
     // Add some images to main link gallery.
     // Gallery index only.
     if ( sw_config.gallery_fix_cat_1
@@ -628,7 +667,6 @@ function swPatchRun(sw_config) {
         patch.galleryFixCat1();
     }
 
-
     // Disable image smiles in gallery.
     // Gallery only.
     if ( sw_config.gallery_ignor_smiles
@@ -638,14 +676,14 @@ function swPatchRun(sw_config) {
         patch.galleryIgnorSmiles();
     }
 
-
     // Add user avatars in gallery.
     // Gallery displayimage only.
-    if ( sw_config.gallery_avatars && (/\/gallery\/displayimage.php/.test(document.location.pathname)) ) {
+    if ( sw_config.gallery_avatars
+        && (/\/gallery\/displayimage.php/.test(document.location.pathname))
+    ) {
         debug('galleryAvatars');
         patch.galleryAvatars();
     }
-
 
     // Correct some bad url.
     // All.
@@ -653,7 +691,6 @@ function swPatchRun(sw_config) {
         debug('correctBadUrl');
         patch.correctBadUrl();
     }
-
 
     // Add alternative menu in top.
     // Sity only.
@@ -678,7 +715,6 @@ function swPatchRun(sw_config) {
 
     }
 
-
     // Add user custome style (css).
     // All sity and forum.
     if ( sw_config.custom_style ) {
@@ -686,15 +722,24 @@ function swPatchRun(sw_config) {
         patch.customStyle();
     }
 
-
     // Forum. Moving right colum to left.
-    // Forum (main only)
+    // Forum main only.
     if ( (sw_config.forum_right_to_left)
         && /\/\/sonic-world\.ru\/forum/.test(document.location.href)
     ) {
         debug('forumRightToLeft');
         patch.forumRightToLeft();
     }
+
+    // Forum. Moving right colum to left.
+    // Forum only.
+    if ( (sw_config.forum_avatar_square)
+        && /\/\/sonic-world\.ru\/forum/.test(document.location.href)
+    ) {
+        debug('forumAvatarSquare');
+        patch.forumAvatarSquare();
+    }
+
 
 //  ====================    DEPRECATED   ========================
 //
