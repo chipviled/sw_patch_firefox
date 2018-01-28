@@ -3,6 +3,8 @@ function debug(args) {
     console.log('>>>', ...arguments);
 }
 
+const jQj = jQuery.noConflict(true);
+
 // Analog jQuery.ready.
 // Default DOMContentLoaded not work as need.
 (function (window) {
@@ -122,43 +124,44 @@ class PatchSw {
 
     // Add avatar for gallery user.
     getGalleryAvatarPict(uid) {
-        let prefUrl = 'http://sonic-world.ru/files/public/avatars/av';
+        let j = this.jQuery;
+        let prefUrl = 'https://sonic-world.ru/files/public/avatars/av';
         if (uid == undefined) return false;
-        this.jQuery.ajax({
+        j.ajax({
             url: prefUrl + uid +'.jpg',
             type:'HEAD',
             error:
                 function(){
-                    this.jQuery.ajax({
+                    j.ajax({
                     url: prefUrl + uid +'.png',
                     type:'HEAD',
                     error:
                         function(){
-                            this.jQuery.ajax({
+                            j.ajax({
                             url: prefUrl + uid +'.gif',
                             type:'HEAD',
                             error:
                                 function(){
-                                    this.jQuery('.sw_gallery_avatar_'+ uid)
+                                    j('.sw_gallery_avatar_'+ uid)
                                         .css('background-color', '#E0E0E0');
                                 },
                             success:
                                 function(){
-                                    this.jQuery('.sw_gallery_avatar_'+ uid)
+                                    j('.sw_gallery_avatar_'+ uid)
                                         .css('background-image', 'url(../files/public/avatars/av'+ uid +'.gif)');
                                 }
                             });
                         },
                     success:
                         function(){
-                            this.jQuery('.sw_gallery_avatar_'+ uid)
+                            j('.sw_gallery_avatar_'+ uid)
                                 .css('background-image', 'url(../files/public/avatars/av'+ uid +'.png)');
                         }
                     });
                 },
             success:
                 function(){
-                    this.jQuery('.sw_gallery_avatar_'+ uid)
+                    j('.sw_gallery_avatar_'+ uid)
                     .css('background-image', 'url(../files/public/avatars/av'+ uid +'.jpg)');
                 }
         });
@@ -190,7 +193,7 @@ class PatchSw {
     disableCommercial() {
         this.jQuery(".slza").hide();
         this.jQuery("#swz1, #swz2").hide();
-        //this.jQuery("#sw_f div[0]").first().hide();       // Incorrect after update forum to v. 3.
+        this.jQuery("#sw_f div:first").hide();
         this.jQuery("#board_statistics").next().hide();
         this.jQuery(".c410d1").hide();
         //this.jQuery("#swz1").parent("th").hide();         // Not need after update forum to v. 3.
@@ -255,6 +258,38 @@ class PatchSw {
         this.jQuery("img[alt^='Exclamation']").replaceWith(" <b>:!:</b> ");
         this.jQuery("img[alt^='Question']").replaceWith(" <b>:?:</b> ");
     }
+
+
+    galleryAvatars() {
+        let list = this.jQuery('#comments').children('table');
+        for(i = 0; i < list.length; i++) {
+            var text = this.jQuery(list[i]).find('a:first').attr("href");
+            if (this.getUrlParameter(text,'uid') != undefined) {
+                this.jQuery(list[i]).wrap('<div class="sw_gallery_comment"><div class="sw_gallery_comment_text"></div></div>');
+            }
+        }
+        list = this.jQuery('.sw_gallery_comment');
+        for(i = 0; i < list.length; i++) {
+            var text = this.jQuery(list[i]).find('a').first().attr("href");
+            var uid = this.getUrlParameter(text,'uid');
+
+            if (uid != undefined) {
+                var text_swga =
+                      '<a href="../user.php?id.'+uid+'">'
+                    + '   <div class="sw_gallery_avatar sw_gallery_avatar_'+uid+'"></div>'
+                    + '</a>';
+                if (uid != 0) {
+                    this.jQuery(list[i]).prepend(text_swga);
+                    this.getGalleryAvatarPict(uid);
+                } else {
+                    this.jQuery(list[i]).prepend(text_swga);
+                }
+            }
+        }
+    }
+
+
+
 
 }
 
@@ -384,7 +419,7 @@ class PatchSw {
 
 // Main patch run
 function swPatchRun(sw_config) {
-    let patch = new PatchSw(sw_config, jQuery);
+    let patch = new PatchSw(sw_config, jQj);
 
     // Hide forum reputation.
     // Forym only.
@@ -463,36 +498,13 @@ function swPatchRun(sw_config) {
         debug('galleryIgnorSmiles');
         patch.galleryIgnorSmiles();
     }
-//
-//
-//     // Add user avatars in gallery.
-//     if ( sw_config.gallery_avatars && (/\/gallery\/displayimage.php/.test(document.location.pathname)) ) {
-//         jQuery('#comments').children('table').each(function() {
-//                     var text = jQuery(this).find('a').first().attr("href");
-//                     if (getUrlParameter(text,'uid') != undefined) {
-//                         jQuery(this).wrap('<div class="sw_gallery_comment"><div class="sw_gallery_comment_text"></div></div>');
-//                     }
-//                 });
-//
-//         jQuery('.sw_gallery_comment').each(function() {
-//             var text = jQuery(this).find('a').first().attr("href");
-//             var uid = getUrlParameter(text,'uid');
-//
-//             if (uid != undefined) {
-//                 var text_swga =
-//                       '<a href="../user.php?id.'+uid+'">'
-//                     + '   <div class="sw_gallery_avatar sw_gallery_avatar_'+uid+'"></div>'
-//                     + '</a>';
-//                 if (uid != 0) {
-//                     jQuery(this).prepend(text_swga);
-//                     getGalleryAvatarPict(uid);
-//                 } else {
-//                     jQuery(this).prepend(text_swga);
-//                 }
-//             }
-//         });
-//
-//     }
+
+
+    // Add user avatars in gallery.
+    if ( sw_config.gallery_avatars && (/\/gallery\/displayimage.php/.test(document.location.pathname)) ) {
+        debug('galleryAvatars');
+        patch.galleryAvatars();
+    }
 //
 //
 //     // Correct some bad url.

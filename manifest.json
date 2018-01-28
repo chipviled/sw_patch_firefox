@@ -51,6 +51,7 @@
   },
 
   "web_accessible_resources": [
+    "/vendor/jquery/jquery.min.js",
     "/data/js/common.js",
     "/data/js/photoswipe-init.js",
     "/vendor/photoswipe/photoswipe.min.js",
