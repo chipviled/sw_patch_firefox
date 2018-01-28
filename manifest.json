@@ -61,7 +61,8 @@
     "/vendor/photoswipe/default-skin/default-skin.css",
     "/vendor/photoswipe/default-skin/default-skin.png",
     "/vendor/photoswipe/default-skin/default-skin.svg",
-    "/vendor/photoswipe/default-skin/preloader.gif"
+    "/vendor/photoswipe/default-skin/preloader.gif",
+    "/data/wav/beep.wav"
   ]
 
 }

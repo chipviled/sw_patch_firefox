@@ -26,7 +26,6 @@ setConfig();
 
 function getConfig() {
     var tmp;
-    console.log('<<<', localStorage);
     for (var key in sw_config) {
         tmp = sw_config[key]
         sw_config[key] = typeof localStorage[key] == "undefined" ? sw_config[key] : localStorage[key];
@@ -99,10 +98,8 @@ function lolresponse(response, status) {
 
 function getSw(){
     if (sw_config.look_for_chyatik) {
-        //console.log('>>>', sw_config);
-
-        var url = 'http://sonic-world.ru/modules/chatik/chatik.php?chan=main';
-        var params = "ajax=1&lastid=" + sw_lolresponse.lastid;
+        let url = 'https://sonic-world.ru/modules/chatik/chatik.php?chan=main';
+        let params = "ajax=1&lastid=" + sw_lolresponse.lastid;
 
         httpRequest.onreadystatechange = answerSw;
         httpRequest.open('POST', url, true);
