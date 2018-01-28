@@ -93,7 +93,7 @@ class PatchSw {
 
     // Get param from url.
     getUrlParameter(sUrl, sParam) {
-        if (sUrl == undefined) return 0;
+        if (sUrl === undefined) return 0;
         var sPageURL = sUrl.split('?')[1];
         var sURLVariables = sPageURL.split('&');
         for (var i = 0; i < sURLVariables.length; i++)
@@ -109,7 +109,7 @@ class PatchSw {
 
     // Get param from url [special e107].
     getE107UrlParameter(sUrl, sParam) {
-        if (sUrl == undefined) return 0;
+        if (sUrl === undefined) return 0;
         var sPageURL = sUrl.split('?')[1];
         var sURLVariables = sPageURL.split('.');
         for (var i = 0; i < sURLVariables.length; i++)
@@ -204,8 +204,8 @@ class PatchSw {
     }
 
     forumReputationIgnore() {
-        var style = document.createElement('style');
-        var css = `
+        let style = document.createElement('style');
+        let css = `
             .reputation,
             .ipsRepBadge,
             .ipsReact_reaction,
@@ -216,7 +216,7 @@ class PatchSw {
                 display: none !important;
             }
         `;
-        var body = document.body || document.getElementsByTagName('body')[0];
+        let body = document.body || document.getElementsByTagName('body')[0];
         style.type = 'text/css';
         if (style.styleSheet){
             style.styleSheet.cssText = css;
@@ -260,25 +260,27 @@ class PatchSw {
     }
 
 
+    // TODO: reomve first and last avatar if pagination is.
     galleryAvatars() {
-        let list = this.jQuery('#comments').children('table');
-        for(i = 0; i < list.length; i++) {
+        let list;
+        list = this.jQuery('#comments').children('table');
+        for(let i = 0; i < list.length; i++) {
             var text = this.jQuery(list[i]).find('a:first').attr("href");
-            if (this.getUrlParameter(text,'uid') != undefined) {
+            if (this.getUrlParameter(text,'uid') !== undefined) {
                 this.jQuery(list[i]).wrap('<div class="sw_gallery_comment"><div class="sw_gallery_comment_text"></div></div>');
             }
         }
         list = this.jQuery('.sw_gallery_comment');
-        for(i = 0; i < list.length; i++) {
+        for(let i = 0; i < list.length; i++) {
             var text = this.jQuery(list[i]).find('a').first().attr("href");
-            var uid = this.getUrlParameter(text,'uid');
+            var uid = this.getUrlParameter(text, 'uid');
 
-            if (uid != undefined) {
+            if (uid !== undefined) {
                 var text_swga =
                       '<a href="../user.php?id.'+uid+'">'
                     + '   <div class="sw_gallery_avatar sw_gallery_avatar_'+uid+'"></div>'
                     + '</a>';
-                if (uid != 0) {
+                if (uid !== 0) {
                     this.jQuery(list[i]).prepend(text_swga);
                     this.getGalleryAvatarPict(uid);
                 } else {
@@ -286,6 +288,99 @@ class PatchSw {
                 }
             }
         }
+    }
+
+
+    correctBadUrl () {
+        let list;
+        // Correct url for edit comments in user profile.
+        if ( /\/user\.php\?/.test(document.location.href) ) {
+            let sw_user_id = getE107UrlParameter(document.location.href, 'id');
+            let sw_edit_id = 0;
+            list = this.jQuery('a[href*="/comment.php?.edit."]');
+            for(let i = 0; i < list.length; i++) {
+                sw_edit_id = getE107UrlParameter(jQuery(list[i]).attr('href'), 'edit');
+                this.jQuery(list[i]).attr('href','/comment.php?comment.user.'+sw_user_id+'.edit.'+sw_edit_id);
+            }
+        }
+
+        // Correct url in bottom chatik (to mobile version).
+        if ( /\/modules\/chatik\/chatik\.php/.test(document.location.pathname) ) {
+            list = this.jQuery('a[href*="/modules/chatik/chatik.php??"]')
+            for(let i = 0; i < list.length; i++) {
+                this.jQuery(list[i]).attr('href', this.jQuery(list[i]).attr('href').replace(/\?+/g, '?') );
+            }
+        }
+    }
+
+
+    alternativeMenu() {
+        let menu_block = '';
+        let submenu_block = '';
+        let select = '';
+        let other_select = '';
+        let list;
+
+        menu_block += '<div class="cv_mainmenu_container"><div class="cv_mainmenu_container_2">';
+        menu_block += '<div id="cv_mainmenu" class="cv_mainmenu cv_clrearfix"><ul>';
+        list = this.jQuery('#sw_c1 .cwp:first span')
+        for(let i = 0; i < list.length; i++) {
+            select = ''
+            if (this.jQuery(list[i]).css('font-weight') == '700') select = 'cv_mainmenu_select ';
+
+            // Correct VK link
+            if (this.jQuery(list[i]).find('a').text() == 'Группа ВКонтакте') {
+                this.jQuery(list[i]).find('a').text('Группа ВК');
+            }
+
+            // Move img.
+            this.jQuery(list[i]).find('a').prepend(this.jQuery(list[i]).find('img'));
+
+            if (i <= 7) {
+                menu_block += '<li class="topmenu ' + select + '">';
+                menu_block += this.jQuery(list[i]).html();
+                menu_block += '</li>';
+            } else {
+                submenu_block += '<li class="' + select + '">';
+                submenu_block += this.jQuery(list[i]).html();
+                submenu_block += '</li>';
+                if (this.jQuery(list[i]).css('font-weight') == '700') other_select = 'cv_mainmenu_select ';
+            }
+        }
+
+        menu_block += '<li class="topmenu submenu ' + other_select + '">';
+        menu_block += '<img src="/e107_images/icons/e7.png" alt=""> <a href=#>Остальное</a>'
+        menu_block += '<ul>' + submenu_block + '</ul>';
+        menu_block += '</li>';
+
+        menu_block += '</ul></div>';
+        menu_block += '</div></div>';
+
+        this.jQuery('#toplogo').after(menu_block);
+
+        // Open/close submenu.
+        let self = this;
+
+        this.jQuery('.cv_mainmenu ul .submenu').on('click', function() {
+            let menu = self.jQuery(this).children('ul');
+            debug(menu);
+            if (menu.hasClass('cv_submenu_open')) {
+                menu.removeClass('cv_submenu_open');
+            } else {
+                menu.addClass('cv_submenu_open');
+            }
+        });
+
+        // Hide submenu if lost mouse.
+        this.jQuery('.cv_mainmenu ul .submenu').on('mouseleave', function() {
+            self.jQuery(this).children('ul').removeClass('cv_submenu_open');
+        });
+
+        // Disable href in links in li.submenu.
+        this.jQuery('.cv_mainmenu ul .submenu').children('a').click(function(e) {
+            e.preventDefault();
+        });
+
     }
 
 
@@ -501,109 +596,34 @@ function swPatchRun(sw_config) {
 
 
     // Add user avatars in gallery.
+    // Gallery displayimage only.
     if ( sw_config.gallery_avatars && (/\/gallery\/displayimage.php/.test(document.location.pathname)) ) {
         debug('galleryAvatars');
         patch.galleryAvatars();
     }
-//
-//
-//     // Correct some bad url.
-//     if ( sw_config.correct_url ) {
-//         // Correct url for edit comments in user profile.
-//         if ( /\/user\.php\?/.test(document.location.href) ) {
-//             var sw_user_id = getE107UrlParameter(document.location.href, 'id');
-//             var sw_edit_id = 0;
-//             jQuery('a[href*="/comment.php?.edit."]').each(function() {
-//                 sw_edit_id = getE107UrlParameter(jQuery(this).attr('href'), 'edit');
-//                 jQuery(this).attr('href','/comment.php?comment.user.'+sw_user_id+'.edit.'+sw_edit_id);
-//             });
-//         }
-//
-//         // Correct url in bottom chatik (to mobile version).
-//         if ( /\/modules\/chatik\/chatik\.php/.test(document.location.pathname) ) {
-//             jQuery('a[href*="/modules/chatik/chatik.php??"]').each(function() {
-//                 jQuery(this).attr('href', jQuery(this).attr('href').replace(/\?+/g, '?') );
-//             });
-//         }
-//     }
-//
-//
-//     // Add alternative menu in top.
-//     if ( (sw_config.alternative_menu) && (/\/\/sonic-world\.ru/.test(document.location.href)) &&
-//             !(  // Without mobile version chatik.
-//                 ( /\/modules\/chatik\/chatik\.php/.test(document.location.href) )
-//                 && ( /mobile=1/.test(document.location.href) )
-//             )
-//         ) {
-//         var menu_block = '';
-//         var submenu_block = '';
-//         var select = '';
-//         var i = 1;
-//         var other_select = '';
-//
-//         menu_block += '<div class="cv_mainmenu_container"><div class="cv_mainmenu_container_2">';
-//         menu_block += '<div id="cv_mainmenu" class="cv_mainmenu cv_clrearfix"><ul>';
-//         jQuery('#sw_c1 .cwp:first span').each( function() {
-//             select = ''
-//             if (jQuery(this).css('font-weight') == '700') select = 'cv_mainmenu_select ';
-//
-//
-//             // Correct VK link
-//             if (jQuery(this).find('a').text() == 'Группа ВКонтакте') {
-//                 jQuery(this).find('a').text('Группа ВК');
-//             }
-//
-//             // Move img.
-//             jQuery(this).find('a').prepend(jQuery(this).find('img'));
-//
-//             if (i <= 8) {
-//                 menu_block += '<li class="topmenu ' + select + '">';
-//                 menu_block += jQuery(this).html();
-//                 menu_block += '</li>';
-//             } else {
-//                 submenu_block += '<li class="' + select + '">';
-//                 submenu_block += jQuery(this).html();
-//                 submenu_block += '</li>';
-//                 if (jQuery(this).css('font-weight') == '700') other_select = 'cv_mainmenu_select ';
-//             }
-//             i++;
-//
-//         });
-//
-//         menu_block += '<li class="topmenu submenu ' + other_select + '">';
-//         menu_block += '<img src="/e107_images/icons/e7.png" alt=""> <a href=#>Остальное</a>'
-//         menu_block += '<ul>' + submenu_block + '</ul>';
-//         menu_block += '</li>';
-//
-//         menu_block += '</ul></div>';
-//         menu_block += '</div></div>';
-//
-//         jQuery('#toplogo').after(menu_block);
-//
-//         //jQuery('#sw_c1').find('.swblock').first().hide();
-//
-//         // Open/close submenu.
-//         jQuery('.cv_mainmenu ul .submenu').on('click', function() {
-//                 var menu = jQuery(this).children('ul');
-//                 if (menu.hasClass('cv_submenu_open')) {
-//                         menu.removeClass('cv_submenu_open');
-//                 } else {
-//                         menu.addClass('cv_submenu_open');
-//                 }
-//         });
-//
-//         // Hide submenu if lost mouse.
-//         jQuery('.cv_mainmenu ul .submenu').on('mouseleave', function() {
-//             jQuery(this).children('ul').removeClass('cv_submenu_open');
-//         });
-//
-//         // Disable href in links in li.submenu.
-//         jQuery('.cv_mainmenu ul .submenu').children('a').click(function(e) {
-//             e.preventDefault();
-//         });
-//
-//     }
-//
+
+
+    // Correct some bad url.
+    // All.
+    if ( sw_config.correct_url ) {
+        debug('correctBadUrl');
+        patch.correctBadUrl();
+    }
+
+
+    // Add alternative menu in top.
+    // Sity only.
+    if ( (sw_config.alternative_menu)
+        && (/\/\/sonic-world\.ru/.test(document.location.href))
+        && !(  // Without mobile version chatik.
+                ( /\/modules\/chatik\/chatik\.php/.test(document.location.href) )
+                && ( /mobile=1/.test(document.location.href) )
+            )
+    ) {
+        debug('alternativeMenu');
+        patch.alternativeMenu();
+    }
+
 //
 //     // Forum. Moving right colum to left.
 //     if ( (sw_config.forum_right_to_left) &&
@@ -707,8 +727,9 @@ function swPatchRun(sw_config) {
 }
 
 jReady (() => {
+    debug('sw_config');
+
     // Run only if it's not admin directory
-    debug('sw_config 2');
     var path_r = document.location.pathname;
     if ( !(/\/odminka\//.test(path_r)) &&
          !(/\/e107_admin\//.test(path_r)) &&
