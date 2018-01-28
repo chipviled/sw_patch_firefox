@@ -1,5 +1,5 @@
 //
-var version = "1.2.0";
+var version = "1.2.1";
 var sw_config = {};
 var commercial_warning = "Включая эту опцию вы поступаете вообще-то не очень хорошо.";
 
@@ -19,6 +19,7 @@ function loadCheckbox(id) {
 
 function saveCheckbox(id) {
     window.sw_config[id] = document.getElementById(id).checked;
+    localStorage[id] = window.sw_config[id];
 }
 
 function loadText(id) {

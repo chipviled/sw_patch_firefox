@@ -2,7 +2,7 @@
 
   "manifest_version": 2,
   "name": "SW patch",
-  "version": "1.2.0",
+  "version": "1.2.1",
 
   "description": "Patch for sonic-world.ru",
   "homepage_url": "https://bitbucket.org/chipviled/sw_patch_f",
