@@ -1,6 +1,6 @@
 // Debug logs.
 function debug(args) {
-    console.log('>>>', ...arguments);
+    //console.log('>>>', ...arguments);
 }
 
 const jQj = jQuery.noConflict(true);
