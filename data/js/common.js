@@ -81,11 +81,310 @@ function debug(args) {
 })(window);
 
 
+
+//*****************************************************************************
+class PatchSw {
+    constructor(config, jQuery) {
+        this.config = config || {};
+        this.jQuery = jQuery;       // TODO: Delete on future.
+    }
+
+    // Get param from url.
+    getUrlParameter(sUrl, sParam) {
+        if (sUrl == undefined) return 0;
+        var sPageURL = sUrl.split('?')[1];
+        var sURLVariables = sPageURL.split('&');
+        for (var i = 0; i < sURLVariables.length; i++)
+        {
+            var sParameterName = sURLVariables[i].split('=');
+            if (sParameterName[0] == sParam)
+            {
+                return sParameterName[1];
+            }
+        }
+        return 0;
+    }
+
+    // Get param from url [special e107].
+    getE107UrlParameter(sUrl, sParam) {
+        if (sUrl == undefined) return 0;
+        var sPageURL = sUrl.split('?')[1];
+        var sURLVariables = sPageURL.split('.');
+        for (var i = 0; i < sURLVariables.length; i++)
+        {
+            if (sURLVariables[i] == sParam)
+            {
+                return sURLVariables[i+1] || 0;
+            }
+        }
+        return 0;
+    }
+
+    // Add avatar for gallery user.
+    getGalleryAvatarPict(uid) {
+        let prefUrl = 'http://sonic-world.ru/files/public/avatars/av';
+        if (uid == undefined) return false;
+        this.jQuery.ajax({
+            url: prefUrl + uid +'.jpg',
+            type:'HEAD',
+            error:
+                function(){
+                    this.jQuery.ajax({
+                    url: prefUrl + uid +'.png',
+                    type:'HEAD',
+                    error:
+                        function(){
+                            this.jQuery.ajax({
+                            url: prefUrl + uid +'.gif',
+                            type:'HEAD',
+                            error:
+                                function(){
+                                    this.jQuery('.sw_gallery_avatar_'+ uid)
+                                        .css('background-color', '#E0E0E0');
+                                },
+                            success:
+                                function(){
+                                    this.jQuery('.sw_gallery_avatar_'+ uid)
+                                        .css('background-image', 'url(../files/public/avatars/av'+ uid +'.gif)');
+                                }
+                            });
+                        },
+                    success:
+                        function(){
+                            this.jQuery('.sw_gallery_avatar_'+ uid)
+                                .css('background-image', 'url(../files/public/avatars/av'+ uid +'.png)');
+                        }
+                    });
+                },
+            success:
+                function(){
+                    this.jQuery('.sw_gallery_avatar_'+ uid)
+                    .css('background-image', 'url(../files/public/avatars/av'+ uid +'.jpg)');
+                }
+        });
+    }
+
+    changeLayout() {
+        this.jQuery("body").addClass("body").addClass("wrap");
+        let wrap = this.jQuery("#wrap");
+        wrap.prepend("<div id='wrap_content'></div>");
+        let wrap_content = this.jQuery("#wrap_content");
+        wrap_content.append( this.jQuery("#sw_c1") );
+        wrap_content.append( this.jQuery("#sw_c3") );
+        wrap_content.append( this.jQuery("#sw_c2") );
+        wrap_content.append( this.jQuery("#sw_f") );
+        wrap.prepend( this.jQuery("#toplogo") );
+        wrap.addClass("wrap");
+        this.jQuery("#sw_c1").addClass("sw_top");
+        this.jQuery("#sw_c3").addClass("sw_top");
+    }
+
+    changeShadowbox() {
+        this.jQuery("a[rel*='shadowbox'] img").addClass("shadowbox_add");
+        this.jQuery('body').append('<style>#sb-body,#sb-loading{background-color: #FFFFFF !important;}</style>');
+        // this.jQuery('body').append(`<style>
+        // #sb-loading-inner{position:absolute;font-size:14px;line-height:34px;height:34px;top:50%;margin-top:-17px;width:100%;text-align:center;}
+        // </style>'`);
+    }
+
+    disableCommercial() {
+        this.jQuery(".slza").hide();
+        this.jQuery("#swz1, #swz2").hide();
+        //this.jQuery("#sw_f div[0]").first().hide();       // Incorrect after update forum to v. 3.
+        this.jQuery("#board_statistics").next().hide();
+        this.jQuery(".c410d1").hide();
+        //this.jQuery("#swz1").parent("th").hide();         // Not need after update forum to v. 3.
+    }
+
+    galleryFilmstripHideLine() {
+        this.jQuery('#filmstrip').children('table').children('tbody').children('tr:nth-child(2n-1)').hide();
+    }
+
+    forumReputationIgnore() {
+        var style = document.createElement('style');
+        var css = `
+            .reputation,
+            .ipsRepBadge,
+            .ipsReact_reaction,
+            .ipsReact_reactions,
+            .ipsReactOverview,
+            .ipsReact,
+            .cProfileRepScore {
+                display: none !important;
+            }
+        `;
+        var body = document.body || document.getElementsByTagName('body')[0];
+        style.type = 'text/css';
+        if (style.styleSheet){
+            style.styleSheet.cssText = css;
+        } else {
+            style.appendChild(document.createTextNode(css));
+        }
+        body.appendChild(style);
+    }
+
+    galleryFixCat1() {
+        let tmp = `
+        <div class="image" style="display:inline-block;">
+        <img src="albums/userpics/12670/picthumb_onya.png" class="" width="93" height="100" border="0" alt="">
+        <img src="albums/userpics/27370/picthumb_img_1225.jpg" class="" width="68" height="100" border="0" alt="">
+        <img src="albums/userpics/10441/picthumb_irma_th.jpg" class="" width="92" height="100" border="0" alt="">
+        <img src="albums/userpics/10594/picthumb_linjkatejlza.jpg" class="" width="99" height="100" border="0" alt="">
+        </div><br />
+        `;
+        this.jQuery('span.catlink:first').css('text-align','center').find('a[href="index.php?cat=1"]').prepend(tmp);
+    }
+
+    galleryIgnorSmiles() {
+        this.jQuery("img[alt^='Laughing']").replaceWith(" <b>lol</b> ");
+        this.jQuery("img[alt^='Razz']").replaceWith(" <b>:-P</b> ");
+        this.jQuery("img[alt^='Very Happy']").replaceWith(" <b>:-D</b> ");
+        this.jQuery("img[alt^='Smile']").replaceWith(" <b>:-)</b> ");
+        this.jQuery("img[alt^='Neutral']").replaceWith(" <b>:-|</b> ");
+        this.jQuery("img[alt^='Sad']").replaceWith(" <b>:-(</b> ");
+        this.jQuery("img[alt^='Crying or Very sad']").replaceWith(" <b>:cry:</b> ");
+        this.jQuery("img[alt^='Cool']").replaceWith(" <b>8-)</b> ");
+        this.jQuery("img[alt^='Surprised']").replaceWith(" <b>:-o</b> ");
+        this.jQuery("img[alt^='Confused']").replaceWith(" <b>:-?</b> ");
+        this.jQuery("img[alt^='Embarrassed']").replaceWith(" <b>:oops:</b> ");
+        this.jQuery("img[alt^='Shocked']").replaceWith(" <b>:shock:</b> ");
+        this.jQuery("img[alt^='Mad']").replaceWith(" <b>:-x</b> ");
+        this.jQuery("img[alt^='Rolling Eyes']").replaceWith(" <b>:roll:</b> ");
+        this.jQuery("img[alt^='Wink']").replaceWith(" <b>;-)</b> ");
+        this.jQuery("img[alt^='Idea']").replaceWith(" <b>:idea:</b> ");
+        this.jQuery("img[alt^='Exclamation']").replaceWith(" <b>:!:</b> ");
+        this.jQuery("img[alt^='Question']").replaceWith(" <b>:?:</b> ");
+    }
+
+}
+
+
+//  ====================    DEPRECATED   ========================
+
+// // Get status page.
+// function getStatusPages(ul, rol, limit, recursion) {
+//
+//     var limit_recursion = 3;
+//
+//     if (recursion === null || recursion === undefined) {
+//         recursion = 1;
+//     }
+//     var bard = null;
+//     var st = '';
+//
+//     if (rol !== null && rol !== 0) {
+//         st = '?st=' + (rol * 15);
+//     }
+//
+//     this.jQuery.ajax({
+//         url:'http://sonic-world.ru/forum/statuses/all/' + st,
+//         type:'GET',
+// //        error:
+// //            function(){
+// //                consola.log('ERROR');
+// //            },
+//         success:
+//             function(data, textStatus, jqXHR){
+//                 bard = limit - setFiltredStatus(ul, data, limit);
+//                 recursion++;
+//                 if (bard > 0 && recursion <= limit_recursion){
+//                     getStatusPages(ul, rol+1, bard, recursion)
+//                 } else if (bard === limit) {
+//                     ul.append(this.jQuery('<li><span>Пусто</span></li>'));
+//                 }
+//             }
+//         });
+//     return 0;
+// }
+//
+//
+// // Filtring and insert statuses.
+// function setFiltredStatus(ul, data, limit) {
+//     var stats_lists = this.jQuery(data).find('#status_wrapper > .ipsBox_container');
+//     var li = null;
+//     var liw = null;
+//     var stats_rel = 0;
+//     var message = '';
+//
+//     stats_lists.each(function (){
+//         li = this.jQuery(this.jQuery(this).html());
+//         message = li.find('.status_status').html();
+//
+//         if (stats_rel < limit && /topic.\d+.*?(конкурс|голос|дуэл)/.test(message)) {
+//
+//             li.find('ul.ipsList_withtinyphoto').remove();
+//             li.find('.status_feedback').remove();
+//
+//             li.find('.ipsUserPhoto_medium')
+//                 .removeClass('ipsUserPhoto_medium')
+//                 .addClass('ipsUserPhoto_mini');
+//
+//             liw = this.jQuery('<li class="clearfix"></li>');
+//             liw.wrapInner(li);
+//
+//             liw.find('.ipsBox_withphoto')
+//                 .removeClass('status_content')
+//                 .removeClass('ipsBox_withphoto')
+//                 .addClass('list_content');
+//
+//             ul.append(liw);
+//             stats_rel++;
+//         }
+//     });
+//
+//     return stats_rel;
+// }
+//
+//
+// function clearReputation() {
+// //    this.jQuery(".reputation, .rep_bar").hide();
+// //    this.jQuery('[data-tabid="reputation"]').hide();
+//     var style = document.createElement('style');
+//     var css = '.reputation, .rep_bar, [data-tabid="reputation"] {display: none !important;}';
+//     var body = document.body || document.getElementsByTagName('body')[0];
+//     style.type = 'text/css';
+//     if (style.styleSheet){
+//         style.styleSheet.cssText = css;
+//     } else {
+//         style.appendChild(document.createTextNode(css));
+//     }
+//     body.appendChild(style);
+// }
+//
+//
+// function addMultiquote(element) {
+//     var post = this.jQuery(element);
+//     var el = post.find('ul.post_controls');
+//     var infoLink = post.find('span.post_id a').attr('href');
+//     if (infoLink.length === 0) {
+//         return;
+//     }
+//
+//     var res = infoLink.match( /\/forum\/topic\/(\d*)-.*#entry(\d*)$/i );
+//     if (res === null) {
+//         return;
+//     }
+//
+//     var t = res[1];
+//     var qpid = res[2];
+//     var href = 'https://sonic-world.ru/forum/index.php?app=forums&module=post&section=post&do=reply_post&f=16&t=' + t + '&qpid=' + qpid;
+//     var link = this.jQuery('<a href="#" title="Эта кнопка позволяет выбрать несколько сообщений (можно из разных тем), а затем ответить одновременно на все." class="ipsButton_secondary">Цитата+</a>');
+//     var li = this.jQuery('<li class="multiquote" id="multiq_" style=""></li>');
+//
+//     link.attr('href', href);
+//     li.append(link);
+//     li.attr('id', 'multiq_' + qpid);
+//     el.prepend(li);
+// }
+
+
+
+
 //*****************************************************************************
 
 // Main patch run
-function swPatchMini(sw_config) {
-    let patch = new PatchSw(sw_config) || debug('Patch not load !!!');
+function swPatchRun(sw_config) {
+    let patch = new PatchSw(sw_config, jQuery);
 
     // Hide forum reputation.
     // Forym only.
@@ -95,11 +394,6 @@ function swPatchMini(sw_config) {
         debug('forumReputationIgnore');
         patch.forumReputationIgnore();
     }
-}
-
-// Main patch run
-function swPatchRun(sw_config) {
-    let patch = new PatchSw(sw_config) || debug('Patch not load !!!');
 
     // Add fxied layout and background color.
     // Portal only.
@@ -141,50 +435,34 @@ function swPatchRun(sw_config) {
     // Hide filmstripper black lines.
     // Gallery displayimage only.
     if ( sw_config.gallery_filmstrip_hide_line
-        && (/\/gallery\/displayimage.php/.test(document.location.pathname))
+        && (/\/gallery\/displayimage\.php/.test(document.location.pathname))
     ) {
         debug('galleryFilmstripHideLine');
         patch.galleryFilmstripHideLine();
     }
-//
-//
-//     // Add some images to main link gallery.
-//     if ( sw_config.gallery_fix_cat_1
-//         && ( (/\/gallery\/$/.test(document.location.pathname)) || (/\/gallery\/index.php$/.test(document.location.pathname)) )
-//     ) {
-//         var tmp = '\
-// <div class="image" style="display:inline-block;">\
-// <img src="albums/userpics/12670/picthumb_onya.png" class="" width="93" height="100" border="0" alt="">\
-// <img src="albums/userpics/27370/picthumb_img_1225.jpg" class="" width="68" height="100" border="0" alt="">\
-// <img src="albums/userpics/10441/picthumb_irma_th.jpg" class="" width="92" height="100" border="0" alt="">\
-// <img src="albums/userpics/10594/picthumb_linjkatejlza.jpg" class="" width="99" height="100" border="0" alt="">\
-// </div><br />\
-// ';
-//         jQuery('span.catlink').first().css('text-align','center').find('a[href="index.php?cat=1"]').prepend(tmp);
-//     }
-//
-//
-//     // Disable image smiles in gallery.
-//     if ( sw_config.gallery_ignor_smiles && (/\/gallery\//.test(document.location.pathname)) ) {
-//         jQuery("img[alt^='Laughing']").replaceWith(" <b>lol</b> ");
-//         jQuery("img[alt^='Razz']").replaceWith(" <b>:-P</b> ");
-//         jQuery("img[alt^='Very Happy']").replaceWith(" <b>:-D</b> ");
-//         jQuery("img[alt^='Smile']").replaceWith(" <b>:-)</b> ");
-//         jQuery("img[alt^='Neutral']").replaceWith(" <b>:-|</b> ");
-//         jQuery("img[alt^='Sad']").replaceWith(" <b>:-(</b> ");
-//         jQuery("img[alt^='Crying or Very sad']").replaceWith(" <b>:cry:</b> ");
-//         jQuery("img[alt^='Cool']").replaceWith(" <b>8-)</b> ");
-//         jQuery("img[alt^='Surprised']").replaceWith(" <b>:-o</b> ");
-//         jQuery("img[alt^='Confused']").replaceWith(" <b>:-?</b> ");
-//         jQuery("img[alt^='Embarrassed']").replaceWith(" <b>:oops:</b> ");
-//         jQuery("img[alt^='Shocked']").replaceWith(" <b>:shock:</b> ");
-//         jQuery("img[alt^='Mad']").replaceWith(" <b>:-x</b> ");
-//         jQuery("img[alt^='Rolling Eyes']").replaceWith(" <b>:roll:</b> ");
-//         jQuery("img[alt^='Wink']").replaceWith(" <b>;-)</b> ");
-//         jQuery("img[alt^='Idea']").replaceWith(" <b>:idea:</b> ");
-//         jQuery("img[alt^='Exclamation']").replaceWith(" <b>:!:</b> ");
-//         jQuery("img[alt^='Question']").replaceWith(" <b>:?:</b> ");
-//     }
+
+
+    // Add some images to main link gallery.
+    // Gallery index only.
+    if ( sw_config.gallery_fix_cat_1
+        && (
+            (/\/gallery\/$/.test(document.location.pathname))
+            || (/\/gallery\/index.php$/.test(document.location.pathname))
+        )
+    ) {
+        debug('galleryFixCat1');
+        patch.galleryFixCat1();
+    }
+
+
+    // Disable image smiles in gallery.
+    // Gallery only.
+    if ( sw_config.gallery_ignor_smiles
+        && (/\/gallery\//.test(document.location.pathname))
+    ) {
+        debug('galleryIgnorSmiles');
+        patch.galleryIgnorSmiles();
+    }
 //
 //
 //     // Add user avatars in gallery.
@@ -414,17 +692,6 @@ function swPatchRun(sw_config) {
 //
 //
 //     }
-}
-
-debug('sw_config 1', window.sw_config);
-var path_r = document.location.pathname;
-if ( !(/\/odminka\//.test(path_r)) &&
-     !(/\/e107_admin\//.test(path_r)) &&
-     !(/\/admin\//.test(path_r)) &&
-     !(/\/fckeditor\//.test(path_r))
-){
-    debug('Run mini patch.');
-    swPatchMini(window.sw_config);
 }
 
 jReady (() => {
