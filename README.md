@@ -1,3 +1,6 @@
+# DEPRECATED
+
+
 ## sw_patch_f Repository 
 
 Firefox extension "SW_patch" add some extra functions in website sonic-world.ru.
